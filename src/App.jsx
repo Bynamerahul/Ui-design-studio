@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
 
 const products = [
@@ -31,12 +31,36 @@ export function Scene() {
 export default function App() {
   const [filter, setFilter] = useState('All');
   const [selected, setSelected] = useState(null);
+  const [soundEnabled, setSoundEnabled] = useState(() => window.localStorage.getItem('ui-design-studio-sound') === 'on');
+  const soundRef = useRef(null);
   const shown = filter === 'All' ? products : products.filter((p) => p.type === filter);
+
+  const playClick = useCallback(() => {
+    if (!soundEnabled) return;
+    if (!soundRef.current) soundRef.current = new Audio('/sounds/interface-click.mp3');
+    soundRef.current.pause();
+    soundRef.current.currentTime = 0;
+    soundRef.current.volume = 0.32;
+    soundRef.current.play().catch(() => {});
+  }, [soundEnabled]);
+
+  useEffect(() => {
+    window.localStorage.setItem('ui-design-studio-sound', soundEnabled ? 'on' : 'off');
+  }, [soundEnabled]);
+
+  useEffect(() => {
+    function onPointerDown(event) {
+      if (event.target.closest('button:not(.sound-toggle), a')) playClick();
+    }
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [playClick]);
 
   useEffect(() => {
     function onMessage(event) {
       if (event.origin !== window.location.origin || event.data?.source !== 'ui-design-studio-hero') return;
       const { action, type } = event.data;
+      if (action === 'sound') { playClick(); return; }
       if (action === 'home') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
       if (action === 'about') { document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }); return; }
       if (action === 'preview') { setSelected(products[0]); return; }
@@ -47,7 +71,7 @@ export default function App() {
     }
     window.addEventListener('message', onMessage);
     return () => window.removeEventListener('message', onMessage);
-  }, []);
+  }, [playClick]);
 
   useEffect(() => {
     if (!selected) return;
@@ -60,6 +84,9 @@ export default function App() {
   return (
     <>
       <Scene />
+      <button className="sound-toggle" type="button" aria-label={soundEnabled ? 'Mute sound effects' : 'Enable sound effects'} aria-pressed={soundEnabled} onClick={() => setSoundEnabled((enabled) => !enabled)}>
+        <span aria-hidden="true">{soundEnabled ? '♪' : '♪̸'}</span><span>Sound {soundEnabled ? 'on' : 'off'}</span>
+      </button>
       <main id="collection">
         <section className="collection-wrap" aria-labelledby="collection-title">
           <div className="section-rule"><span>UI DESIGN STUDIO</span><span>THE COLLECTION / 2026</span></div>
