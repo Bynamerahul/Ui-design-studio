@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
 const products = [{
   name: 'Forma',
@@ -61,27 +61,7 @@ export function Scene() {
 export default function App() {
   const [filter, setFilter] = useState('All');
   const [selected, setSelected] = useState(null);
-  const [soundEnabled, setSoundEnabled] = useState(() => window.localStorage.getItem('ui-design-studio-sound') === 'on');
-  const soundRef = useRef(null);
   const shown = filter === 'All' ? products : products.filter(p => p.type === filter);
-  const playClick = useCallback(() => {
-    if (!soundEnabled) return;
-    if (!soundRef.current) soundRef.current = new Audio('/sounds/interface-click.mp3');
-    soundRef.current.pause();
-    soundRef.current.currentTime = 0;
-    soundRef.current.volume = 0.32;
-    soundRef.current.play().catch(() => {});
-  }, [soundEnabled]);
-  useEffect(() => {
-    window.localStorage.setItem('ui-design-studio-sound', soundEnabled ? 'on' : 'off');
-  }, [soundEnabled]);
-  useEffect(() => {
-    function onPointerDown(event) {
-      if (event.target.closest('button:not(.sound-toggle), a')) playClick();
-    }
-    document.addEventListener('pointerdown', onPointerDown);
-    return () => document.removeEventListener('pointerdown', onPointerDown);
-  }, [playClick]);
   useEffect(() => {
     function onMessage(event) {
       if (event.origin !== window.location.origin || event.data?.source !== 'ui-design-studio-hero') return;
@@ -89,10 +69,6 @@ export default function App() {
         action,
         type
       } = event.data;
-      if (action === 'sound') {
-        playClick();
-        return;
-      }
       if (action === 'home') {
         window.scrollTo({
           top: 0,
@@ -119,7 +95,7 @@ export default function App() {
     }
     window.addEventListener('message', onMessage);
     return () => window.removeEventListener('message', onMessage);
-  }, [playClick]);
+  }, []);
   useEffect(() => {
     if (!selected) return;
     document.querySelector('.modal-close')?.focus();
@@ -129,15 +105,7 @@ export default function App() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [selected]);
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Scene, null), /*#__PURE__*/React.createElement("button", {
-    className: "sound-toggle",
-    type: "button",
-    "aria-label": soundEnabled ? 'Mute sound effects' : 'Enable sound effects',
-    "aria-pressed": soundEnabled,
-    onClick: () => setSoundEnabled(enabled => !enabled)
-  }, /*#__PURE__*/React.createElement("span", {
-    "aria-hidden": "true"
-  }, soundEnabled ? '♪' : '♪̸'), /*#__PURE__*/React.createElement("span", null, "Sound ", soundEnabled ? 'on' : 'off')), /*#__PURE__*/React.createElement("main", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Scene, null), /*#__PURE__*/React.createElement("main", {
     id: "collection"
   }, /*#__PURE__*/React.createElement("section", {
     className: "collection-wrap",
