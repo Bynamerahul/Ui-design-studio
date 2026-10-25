@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } fr
 import { resolve, join, dirname, sep } from 'node:path';
 import { createHash } from 'node:crypto';
 import { transformSync } from '@babel/core';
+import { adaptSylva } from './adapt-sylva.mjs';
 
 const root=resolve('.');
 const dist=resolve(root,'dist');
@@ -23,7 +24,7 @@ for(const [relative,expected] of Object.entries(checks)){
   if(actual!==expected)throw new Error(`ThreeUI source hash mismatch: ${relative}`);
   const to=join(dist,'landing-pages',relative);
   mkdirSync(dirname(to),{recursive:true});
-  writeFileSync(to,bytes);
+  writeFileSync(to,relative==='inner-green-3d.html'?adaptSylva(bytes.toString('utf8')):bytes);
 }
 mkdirSync(join(dist,'vendor'),{recursive:true});
 for(const name of ['LandingPages.js','pageTypography.js','pageRecipes.js']){
