@@ -9,7 +9,7 @@ npm ci
 npm run build
 ```
 
-Serve the generated `dist/` directory from any static host. The build copies ThreeUI's authored HTML, local Three.js runtime, two card images, and Lexend font from the pinned `@designcodeio/threeui@1.2.0` package. It checks all five SHA-256 hashes before writing output. The JSX source uses the configured `<SylvaHero />` props in `src/App.jsx`.
+Serve the generated `dist/` directory from any static host. The build copies ThreeUI's authored HTML, local Three.js runtime, two card images, and Lexend font from the pinned `@designcodeio/threeui@1.2.0` package. It checks all five SHA-256 hashes before writing output. The JSX source uses the configured `<SylvaHero />` props in `src/App.jsx`. After verification, `scripts/adapt-sylva.mjs` changes only the storefront copy and connects the existing controls to the catalog; the authored scene renderer remains intact.
 
 ## Sales status
 
