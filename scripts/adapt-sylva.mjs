@@ -33,9 +33,6 @@ export function adaptSylva(source) {
   function send(action, type) {
     window.parent.postMessage({ source: 'ui-design-studio-hero', action: action, type: type || null }, window.location.origin);
   }
-  document.addEventListener('pointerdown', function (event) {
-    if (event.target.closest('button, a, [data-dock]')) send('sound');
-  });
   var dock = document.querySelectorAll('[data-dock]');
   var actions = [
     ['home'], ['collection'], ['collection', 'Website'], ['collection', 'Mobile'], ['collection']

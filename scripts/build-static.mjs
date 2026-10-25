@@ -32,8 +32,6 @@ for(const name of ['LandingPages.js','pageTypography.js','pageRecipes.js']){
 }
 cpSync(join(pkg,'style.css'),join(dist,'threeui.css'));
 cpSync(join(root,'src/style.css'),join(dist,'styles.css'));
-mkdirSync(join(dist,'sounds'),{recursive:true});
-cpSync(join(root,'public/sounds/interface-click.mp3'),join(dist,'sounds/interface-click.mp3'));
 const transformed=transformSync(readFileSync(join(root,'src/App.jsx'),'utf8'),{filename:'App.jsx',configFile:false,babelrc:false,presets:[['@babel/preset-react',{runtime:'classic'}]]});
 writeFileSync(join(dist,'App.js'),transformed.code);
 writeFileSync(join(dist,'main.js'),`import React from 'react';\nimport { createRoot } from 'react-dom/client';\nimport App from './App.js';\ncreateRoot(document.getElementById('root')).render(React.createElement(App));\n`);
