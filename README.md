@@ -1,6 +1,8 @@
 # UI Design Studio
 
-Sample storefront with the exact ThreeUI Sylva Living Green hero and six illustrative UI concepts.
+Storefront preview with the exact ThreeUI Sylva Living Green hero, a scroll-drawn SVG journey line, one $10 design listing, and six illustrative UI concepts.
+
+The first design's full prompt is saved privately outside this public repository. The public site includes only a visual preview. Purchase and prompt copying require a payment provider, a server-side verified purchase record, and private prompt delivery; none are active yet. The checkout button explains this status instead of claiming a sale. Public visuals can still be captured by visitors, so the site does not claim that previews are copy-proof.
 
 ## Build
 
