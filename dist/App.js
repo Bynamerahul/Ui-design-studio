@@ -1,6 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
 const products = [{
+  name: 'Tubes Cursor',
+  type: 'Website',
+  tag: 'Interactive 3D background',
+  color: '#10131c',
+  ink: '#edf2ff',
+  shape: 'tubes',
+  price: 10,
+  status: 'First release'
+}, {
   name: 'Forma',
   type: 'Website',
   tag: 'Editorial portfolio',
@@ -43,6 +52,46 @@ const products = [{
   ink: '#3a3a50',
   shape: 'bars'
 }];
+function ProductArtwork({
+  product
+}) {
+  if (product.shape === 'tubes') return /*#__PURE__*/React.createElement("div", {
+    className: "product-preview tubes-preview",
+    role: "img",
+    "aria-label": "Preview illustration of colorful interactive tubes"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "tube tube-one"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "tube tube-two"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "tube tube-three"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "tubes-copy"
+  }, /*#__PURE__*/React.createElement("small", null, "INTERACTIVE BACKGROUND / 001"), /*#__PURE__*/React.createElement("strong", null, "TUBES", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("em", null, "CURSOR")), /*#__PURE__*/React.createElement("span", null, "Move. Explore. Create.")), /*#__PURE__*/React.createElement("span", {
+    className: "preview-watermark"
+  }, "PREVIEW · UI DESIGN STUDIO"));
+  return /*#__PURE__*/React.createElement("div", {
+    className: `product-preview ${product.shape}`,
+    style: {
+      '--card-bg': product.color,
+      '--card-ink': product.ink
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "preview-window"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "preview-top"
+  }, /*#__PURE__*/React.createElement("span", null, "● ● ●"), /*#__PURE__*/React.createElement("b", null, product.name.toUpperCase())), /*#__PURE__*/React.createElement("div", {
+    className: "preview-layout"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "preview-rail"
+  }, /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null)), /*#__PURE__*/React.createElement("div", {
+    className: "preview-body"
+  }, /*#__PURE__*/React.createElement("small", null, product.tag), /*#__PURE__*/React.createElement("strong", null, product.name, /*#__PURE__*/React.createElement("span", null, ".")), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("div", {
+    className: "preview-object"
+  })))), /*#__PURE__*/React.createElement("span", {
+    className: "preview-watermark"
+  }, "PREVIEW · UI DESIGN STUDIO"));
+}
 export function Scene() {
   return /*#__PURE__*/React.createElement("div", {
     className: "shader-frame"
@@ -61,7 +110,35 @@ export function Scene() {
 export default function App() {
   const [filter, setFilter] = useState('All');
   const [selected, setSelected] = useState(null);
+  const [checkoutMessage, setCheckoutMessage] = useState(false);
+  const journeyRef = useRef(null);
+  const journeyPathRef = useRef(null);
   const shown = filter === 'All' ? products : products.filter(p => p.type === filter);
+  useEffect(() => {
+    const path = journeyPathRef.current;
+    const section = journeyRef.current;
+    if (!path || !section) return;
+    const length = path.getTotalLength();
+    path.style.strokeDasharray = String(length);
+    function updateJourney() {
+      const rect = section.getBoundingClientRect();
+      const viewport = window.innerHeight;
+      const progress = Math.max(0, Math.min(1, (viewport * 0.58 - rect.top) / Math.max(1, rect.height - viewport * 0.3)));
+      path.style.strokeDashoffset = String(length * (1 - progress));
+    }
+    const observer = new ResizeObserver(updateJourney);
+    observer.observe(section);
+    window.addEventListener('scroll', updateJourney, {
+      passive: true
+    });
+    window.addEventListener('resize', updateJourney);
+    updateJourney();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', updateJourney);
+      window.removeEventListener('resize', updateJourney);
+    };
+  }, [filter]);
   useEffect(() => {
     function onMessage(event) {
       if (event.origin !== window.location.origin || event.data?.source !== 'ui-design-studio-hero') return;
@@ -83,7 +160,8 @@ export default function App() {
         return;
       }
       if (action === 'preview') {
-        setSelected(products[0]);
+        setCheckoutMessage(false);
+        setSelected(products.find(product => product.name === 'Forma'));
         return;
       }
       if (action === 'collection') {
@@ -118,7 +196,7 @@ export default function App() {
     className: "eyebrow"
   }, "SELECTED INTERFACES"), /*#__PURE__*/React.createElement("h1", {
     id: "collection-title"
-  }, "Designs for", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("em", null, "what comes next."))), /*#__PURE__*/React.createElement("p", null, "Explore considered interface concepts for websites, apps, and dashboards. This sample catalog shows the direction of the store while the first purchasable designs are prepared.")), /*#__PURE__*/React.createElement("div", {
+  }, "Designs for", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("em", null, "what comes next."))), /*#__PURE__*/React.createElement("p", null, "Explore UI designs one by one. The first release is a cursor-reactive 3D background, with more website, app, and dashboard concepts on the way.")), /*#__PURE__*/React.createElement("div", {
     className: "filters",
     role: "group",
     "aria-label": "Filter UI designs"
@@ -128,39 +206,43 @@ export default function App() {
     className: filter === type ? 'active' : '',
     "aria-pressed": filter === type,
     onClick: () => setFilter(type)
-  }, type, type === 'All' && /*#__PURE__*/React.createElement("span", null, "06")))), /*#__PURE__*/React.createElement("div", {
+  }, type, type === 'All' && /*#__PURE__*/React.createElement("span", null, "07")))), /*#__PURE__*/React.createElement("div", {
+    className: "journey",
+    ref: journeyRef
+  }, /*#__PURE__*/React.createElement("svg", {
+    className: "journey-line",
+    viewBox: "0 0 120 1000",
+    preserveAspectRatio: "none",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("path", {
+    className: "journey-track",
+    d: "M 55 0 C 105 180 15 310 65 500 S 15 820 70 1000"
+  }), /*#__PURE__*/React.createElement("path", {
+    ref: journeyPathRef,
+    className: "journey-progress",
+    d: "M 55 0 C 105 180 15 310 65 500 S 15 820 70 1000"
+  })), /*#__PURE__*/React.createElement("div", {
     className: "products"
-  }, shown.map(product => /*#__PURE__*/React.createElement("button", {
+  }, shown.map((product, index) => /*#__PURE__*/React.createElement("button", {
     className: "product",
     type: "button",
     key: product.name,
-    onClick: () => setSelected(product),
-    "aria-label": `View ${product.name} details`
-  }, /*#__PURE__*/React.createElement("div", {
-    className: `product-preview ${product.shape}`,
-    style: {
-      '--card-bg': product.color,
-      '--card-ink': product.ink
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "preview-window"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "preview-top"
-  }, /*#__PURE__*/React.createElement("span", null, "● ● ●"), /*#__PURE__*/React.createElement("b", null, product.name.toUpperCase())), /*#__PURE__*/React.createElement("div", {
-    className: "preview-layout"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "preview-rail"
-  }, /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null)), /*#__PURE__*/React.createElement("div", {
-    className: "preview-body"
-  }, /*#__PURE__*/React.createElement("small", null, product.tag), /*#__PURE__*/React.createElement("strong", null, product.name, /*#__PURE__*/React.createElement("span", null, ".")), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("div", {
-    className: "preview-object"
-  }))))), /*#__PURE__*/React.createElement("div", {
+    onClick: () => {
+      setCheckoutMessage(false);
+      setSelected(product);
+    },
+    "aria-label": `Preview ${product.name}`
+  }, /*#__PURE__*/React.createElement(ProductArtwork, {
+    product: product
+  }), /*#__PURE__*/React.createElement("div", {
     className: "product-label"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", null, product.type.toUpperCase(), " / SAMPLE CONCEPT"), /*#__PURE__*/React.createElement("strong", null, product.name)), /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", null, String(index + 1).padStart(2, '0'), " / ", product.type.toUpperCase(), " / ", product.status || 'CONCEPT PREVIEW'), /*#__PURE__*/React.createElement("strong", null, product.name), /*#__PURE__*/React.createElement("p", null, product.tag), /*#__PURE__*/React.createElement("b", {
+    className: "product-price"
+  }, product.price ? `$${product.price}` : 'Coming soon')), /*#__PURE__*/React.createElement("span", {
     className: "arrow"
-  }, "↗"))))), /*#__PURE__*/React.createElement("p", {
+  }, "↗")))))), /*#__PURE__*/React.createElement("p", {
     className: "catalog-note"
-  }, "Sample concepts only. Product files, pricing, licenses, payment, and downloads will be added before sales open.")), /*#__PURE__*/React.createElement("section", {
+  }, "The first design is priced at $10. Checkout and private prompt delivery will open after payment setup. Other cards are concept previews.")), /*#__PURE__*/React.createElement("section", {
     className: "closing",
     id: "about"
   }, /*#__PURE__*/React.createElement("div", {
@@ -187,31 +269,25 @@ export default function App() {
     type: "button",
     "aria-label": "Close details",
     onClick: () => setSelected(null)
-  }, "×"), /*#__PURE__*/React.createElement("div", {
-    className: `product-preview ${selected.shape}`,
-    style: {
-      '--card-bg': selected.color,
-      '--card-ink': selected.ink
-    }
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "preview-window"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "preview-top"
-  }, /*#__PURE__*/React.createElement("span", null, "● ● ●"), /*#__PURE__*/React.createElement("b", null, selected.name.toUpperCase())), /*#__PURE__*/React.createElement("div", {
-    className: "preview-layout"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "preview-rail"
-  }, /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null)), /*#__PURE__*/React.createElement("div", {
-    className: "preview-body"
-  }, /*#__PURE__*/React.createElement("small", null, selected.tag), /*#__PURE__*/React.createElement("strong", null, selected.name, /*#__PURE__*/React.createElement("span", null, ".")), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("div", {
-    className: "preview-object"
-  }))))), /*#__PURE__*/React.createElement("p", {
+  }, "×"), /*#__PURE__*/React.createElement(ProductArtwork, {
+    product: selected
+  }), /*#__PURE__*/React.createElement("p", {
     className: "eyebrow"
-  }, "SAMPLE DESIGN CONCEPT"), /*#__PURE__*/React.createElement("h2", {
+  }, selected.price ? 'FIRST DESIGN / PREVIEW' : 'CONCEPT PREVIEW'), /*#__PURE__*/React.createElement("h2", {
     id: "modal-title"
-  }, selected.name), /*#__PURE__*/React.createElement("p", null, selected.tag, " · ", selected.type, " UI concept."), /*#__PURE__*/React.createElement("div", {
+  }, selected.name), /*#__PURE__*/React.createElement("p", null, selected.tag, " · ", selected.type, " UI design."), selected.price ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", {
+    className: "preview-disclaimer"
+  }, "The visual preview is public. The implementation prompt is kept private until a verified purchase can unlock it."), /*#__PURE__*/React.createElement("div", {
     className: "modal-foot"
-  }, /*#__PURE__*/React.createElement("span", null, "Files and pricing are being prepared."), /*#__PURE__*/React.createElement("button", {
+  }, /*#__PURE__*/React.createElement("strong", null, "$10"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setCheckoutMessage(true)
+  }, "Purchase for $10 ↗")), checkoutMessage && /*#__PURE__*/React.createElement("p", {
+    className: "checkout-message",
+    role: "status"
+  }, "Checkout is not active yet. A verified payment service is required before we can safely deliver the private prompt.")) : /*#__PURE__*/React.createElement("div", {
+    className: "modal-foot"
+  }, /*#__PURE__*/React.createElement("span", null, "This design is a concept preview."), /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: () => {
       setSelected(null);

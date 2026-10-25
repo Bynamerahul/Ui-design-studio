@@ -8,3 +8,39 @@
 .product-modal .modal-close{z-index:2;background:#f8faf5;border-radius:50%;width:36px;height:36px;display:grid;place-items:center;line-height:1}
 .preview-body small,.preview-body strong,.preview-body>i{position:relative;z-index:1}
 @media(max-width:640px){.product-modal .product-preview{height:210px;margin:-45px -45px 25px}}
+
+/* A scroll-drawn connector leads visitors through individual design cards. */
+.journey{position:relative;padding-left:115px;max-width:1350px;margin:0 auto}
+.journey-line{position:absolute;top:0;bottom:0;left:0;width:92px;height:100%;overflow:visible;pointer-events:none}
+.journey-line path{fill:none;stroke-width:2.5;vector-effect:non-scaling-stroke}
+.journey-track{stroke:#d6ded2}
+.journey-progress{stroke:#5e8d64;stroke-linecap:round;transition:stroke-dashoffset .08s linear}
+.products{display:grid;grid-template-columns:1fr;gap:32px}
+.product{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(270px,.72fr);align-items:stretch;background:#fff;border:1px solid #dde4d9;min-height:335px;box-shadow:0 18px 50px #203b2710;transition:transform .25s,box-shadow .25s}
+.product:hover{transform:translateY(-4px);box-shadow:0 25px 55px #203b2726}
+.product-preview{height:100%;min-height:335px}
+.product-label{padding:38px 38px 34px;align-items:flex-start;gap:20px}
+.product-label strong{font-size:clamp(32px,3.6vw,56px);line-height:1.05;margin-top:21px}
+.product-label p{font-size:14px;color:#7a867b;line-height:1.6;margin:15px 0 26px}
+.product-price{display:inline-block;background:#e4eee1;color:#29432e;border-radius:100px;padding:9px 15px;font-size:13px}
+.product-label .arrow{flex:0 0 36px}
+.preview-watermark{position:absolute;bottom:16px;left:18px;z-index:5;color:#fff;background:#18231b99;padding:6px 8px;font-size:9px;letter-spacing:.14em;pointer-events:none}
+.tubes-preview{isolation:isolate;background:radial-gradient(circle at 65% 44%,#3c235b 0,#171425 40%,#090d15 80%);overflow:hidden}
+.tubes-preview:before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 34% 60%,#0df5e744,transparent 42%),radial-gradient(circle at 75% 25%,#f943d344,transparent 40%);filter:blur(28px)}
+.tube{position:absolute;z-index:0;width:80%;height:65%;border:11px solid transparent;border-radius:48% 58% 40% 62%;filter:drop-shadow(0 0 12px currentColor);transform:rotate(-24deg)}
+.tube-one{top:24%;left:-14%;border-top-color:#fa5cf1;border-right-color:#fa5cf1;color:#fa5cf1}
+.tube-two{top:-16%;right:-25%;border-bottom-color:#51f3d4;border-left-color:#51f3d4;color:#51f3d4;transform:rotate(24deg)}
+.tube-three{bottom:-36%;right:0;border-top-color:#8375ff;border-left-color:#8375ff;color:#8375ff;transform:rotate(35deg)}
+.tubes-copy{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;color:white;text-shadow:0 3px 20px #04080e}
+.tubes-copy small{font-size:10px;letter-spacing:.22em;color:#d6d0ee}
+.tubes-copy strong{font-family:Manrope,sans-serif;font-size:clamp(46px,7vw,95px);line-height:.92;letter-spacing:-.09em;margin:14px 0}
+.tubes-copy em{font-style:normal;color:#ecb7f7}
+.tubes-copy>span{font-size:13px;letter-spacing:.12em;color:#e7e4f6}
+.product-modal .tubes-preview{min-height:0}
+.product-modal .tubes-copy strong{font-size:clamp(40px,7vw,66px)}
+.product-modal .preview-disclaimer{font-size:13px;line-height:1.65;max-width:480px}
+.product-modal .modal-foot strong{font-size:24px;color:#28482e}
+.checkout-message{padding:14px 16px;background:#e5ede2;color:#315339!important;line-height:1.55;font-size:13px}
+@media(max-width:900px){.journey{padding-left:78px}.journey-line{width:65px}.product{grid-template-columns:1fr}.product-preview{height:320px;min-height:320px}.product-label{min-height:195px}}
+@media(max-width:640px){.journey{padding-left:32px}.journey-line{width:30px}.product-preview{height:245px;min-height:245px}.product-label{padding:25px;min-height:180px}.product-label strong{font-size:36px}.tubes-copy strong{font-size:48px}.preview-watermark{font-size:7px}.product-modal .tubes-preview{height:210px}}
+@media(prefers-reduced-motion:reduce){.journey-progress{transition:none}}
