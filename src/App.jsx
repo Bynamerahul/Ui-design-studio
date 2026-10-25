@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
 
 const products = [
@@ -33,6 +33,30 @@ export default function App() {
   const [selected, setSelected] = useState(null);
   const shown = filter === 'All' ? products : products.filter((p) => p.type === filter);
 
+  useEffect(() => {
+    function onMessage(event) {
+      if (event.origin !== window.location.origin || event.data?.source !== 'ui-design-studio-hero') return;
+      const { action, type } = event.data;
+      if (action === 'home') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+      if (action === 'about') { document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }); return; }
+      if (action === 'preview') { setSelected(products[0]); return; }
+      if (action === 'collection') {
+        setFilter(type && ['Website', 'Mobile', 'Dashboard'].includes(type) ? type : 'All');
+        document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, []);
+
+  useEffect(() => {
+    if (!selected) return;
+    document.querySelector('.modal-close')?.focus();
+    function onKeyDown(event) { if (event.key === 'Escape') setSelected(null); }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [selected]);
+
   return (
     <>
       <Scene />
@@ -56,10 +80,20 @@ export default function App() {
           </div>
           <p className="catalog-note">Sample concepts only. Product files, pricing, licenses, payment, and downloads will be added before sales open.</p>
         </section>
-        <section className="closing"><div className="closing-inner"><span className="eyebrow">UI DESIGN STUDIO</span><h2>A better beginning<br />for your next idea.</h2><p>Original UI designs are on their way. Explore the collection now and check back for the first release.</p><a href="#collection">Explore the collection <span>↗</span></a></div></section>
+        <section className="closing" id="about"><div className="closing-inner"><span className="eyebrow">UI DESIGN STUDIO</span><h2>A better beginning<br />for your next idea.</h2><p>Original UI designs are on their way. Explore the collection now and check back for the first release.</p><a href="#collection">Explore the collection <span>↗</span></a></div></section>
       </main>
       <footer><span>© UI Design Studio</span><a href="#collection">Back to collection ↑</a></footer>
-      {selected && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelected(null); }}><div className="product-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button className="modal-close" type="button" aria-label="Close details" onClick={() => setSelected(null)}>×</button><p className="eyebrow">SAMPLE DESIGN CONCEPT</p><h2 id="modal-title">{selected.name}</h2><p>{selected.tag} · {selected.type} UI concept.</p><div className="modal-foot"><span>Files and pricing coming soon</span><button disabled>Checkout coming soon</button></div></div></div>}
+      {selected && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelected(null); }}>
+        <div className="product-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+          <button className="modal-close" type="button" aria-label="Close details" onClick={() => setSelected(null)}>×</button>
+          <div className={`product-preview ${selected.shape}`} style={{ '--card-bg': selected.color, '--card-ink': selected.ink }}>
+            <div className="preview-window"><div className="preview-top"><span>● ● ●</span><b>{selected.name.toUpperCase()}</b></div><div className="preview-layout"><div className="preview-rail"><i /><i /><i /></div><div className="preview-body"><small>{selected.tag}</small><strong>{selected.name}<span>.</span></strong><i /><i /><div className="preview-object" /></div></div></div>
+          </div>
+          <p className="eyebrow">SAMPLE DESIGN CONCEPT</p><h2 id="modal-title">{selected.name}</h2>
+          <p>{selected.tag} · {selected.type} UI concept.</p>
+          <div className="modal-foot"><span>Files and pricing are being prepared.</span><button type="button" onClick={() => { setSelected(null); document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' }); }}>View more designs</button></div>
+        </div>
+      </div>}
     </>
   );
 }
