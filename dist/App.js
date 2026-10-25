@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
 const products = [{
   name: 'Forma',
@@ -62,6 +62,49 @@ export default function App() {
   const [filter, setFilter] = useState('All');
   const [selected, setSelected] = useState(null);
   const shown = filter === 'All' ? products : products.filter(p => p.type === filter);
+  useEffect(() => {
+    function onMessage(event) {
+      if (event.origin !== window.location.origin || event.data?.source !== 'ui-design-studio-hero') return;
+      const {
+        action,
+        type
+      } = event.data;
+      if (action === 'home') {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+        return;
+      }
+      if (action === 'about') {
+        document.getElementById('about')?.scrollIntoView({
+          behavior: 'smooth'
+        });
+        return;
+      }
+      if (action === 'preview') {
+        setSelected(products[0]);
+        return;
+      }
+      if (action === 'collection') {
+        setFilter(type && ['Website', 'Mobile', 'Dashboard'].includes(type) ? type : 'All');
+        document.getElementById('collection')?.scrollIntoView({
+          behavior: 'smooth'
+        });
+      }
+    }
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, []);
+  useEffect(() => {
+    if (!selected) return;
+    document.querySelector('.modal-close')?.focus();
+    function onKeyDown(event) {
+      if (event.key === 'Escape') setSelected(null);
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [selected]);
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Scene, null), /*#__PURE__*/React.createElement("main", {
     id: "collection"
   }, /*#__PURE__*/React.createElement("section", {
@@ -118,7 +161,8 @@ export default function App() {
   }, "↗"))))), /*#__PURE__*/React.createElement("p", {
     className: "catalog-note"
   }, "Sample concepts only. Product files, pricing, licenses, payment, and downloads will be added before sales open.")), /*#__PURE__*/React.createElement("section", {
-    className: "closing"
+    className: "closing",
+    id: "about"
   }, /*#__PURE__*/React.createElement("div", {
     className: "closing-inner"
   }, /*#__PURE__*/React.createElement("span", {
@@ -143,13 +187,37 @@ export default function App() {
     type: "button",
     "aria-label": "Close details",
     onClick: () => setSelected(null)
-  }, "×"), /*#__PURE__*/React.createElement("p", {
+  }, "×"), /*#__PURE__*/React.createElement("div", {
+    className: `product-preview ${selected.shape}`,
+    style: {
+      '--card-bg': selected.color,
+      '--card-ink': selected.ink
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "preview-window"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "preview-top"
+  }, /*#__PURE__*/React.createElement("span", null, "● ● ●"), /*#__PURE__*/React.createElement("b", null, selected.name.toUpperCase())), /*#__PURE__*/React.createElement("div", {
+    className: "preview-layout"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "preview-rail"
+  }, /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null)), /*#__PURE__*/React.createElement("div", {
+    className: "preview-body"
+  }, /*#__PURE__*/React.createElement("small", null, selected.tag), /*#__PURE__*/React.createElement("strong", null, selected.name, /*#__PURE__*/React.createElement("span", null, ".")), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("div", {
+    className: "preview-object"
+  }))))), /*#__PURE__*/React.createElement("p", {
     className: "eyebrow"
   }, "SAMPLE DESIGN CONCEPT"), /*#__PURE__*/React.createElement("h2", {
     id: "modal-title"
   }, selected.name), /*#__PURE__*/React.createElement("p", null, selected.tag, " · ", selected.type, " UI concept."), /*#__PURE__*/React.createElement("div", {
     className: "modal-foot"
-  }, /*#__PURE__*/React.createElement("span", null, "Files and pricing coming soon"), /*#__PURE__*/React.createElement("button", {
-    disabled: true
-  }, "Checkout coming soon")))));
+  }, /*#__PURE__*/React.createElement("span", null, "Files and pricing are being prepared."), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => {
+      setSelected(null);
+      document.getElementById('collection')?.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+  }, "View more designs")))));
 }
