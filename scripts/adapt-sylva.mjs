@@ -21,7 +21,7 @@ export function adaptSylva(source) {
   replaceOnce('We restore wild places through patient design, native planting, and a deeper kind of stewardship.', 'Explore crafted UI designs for websites, apps, and dashboards — made to spark your next idea.');
   replaceOnce('<span class="lbl">Explore the work</span>', '<span class="lbl">Browse the designs</span>');
   replaceOnce('aria-label="Play the film"', 'aria-label="Preview a featured design"');
-  replaceOnce('<dt>Canopy restored</dt><dd>282 ha</dd>', '<dt>UI concepts</dt><dd>06 to explore</dd>');
+  replaceOnce('<dt>Canopy restored</dt><dd>282 ha</dd>', '<dt>UI concepts</dt><dd>07 to explore</dd>');
   replaceOnce('<dt>Native species</dt><dd>43 mapped</dd>', '<dt>Design paths</dt><dd>03 categories</dd>');
   replaceOnce('<p class="label">Field Note 07</p>', '<p class="label">Featured Concept</p>');
   replaceOnce('<h2>After the Rain</h2>', '<h2>Forma Portfolio</h2>');
