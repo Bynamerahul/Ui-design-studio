@@ -1,5 +1,9 @@
 # UI Design Studio
 
+## Sound effect
+
+The optional interface click is [Soft Interface Click by Universfield](https://pixabay.com/sound-effects/film-special-effects-soft-interface-click-126517/), downloaded from Pixabay under the [Pixabay Content License](https://pixabay.com/service/license-summary/). Sound starts off and can be toggled on by visitors. The audio file is included only as part of this website experience.
+
 Sample storefront with the exact ThreeUI Sylva Living Green hero and six illustrative UI concepts.
 
 ## Build
