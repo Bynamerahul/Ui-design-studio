@@ -1,8 +1,8 @@
 # UI Design Studio
 
-Storefront preview with the exact ThreeUI Sylva Living Green hero, a scroll-drawn SVG journey line, one $10 design listing, and six illustrative UI concepts.
+Storefront preview with the exact ThreeUI Sylva Living Green hero, a scroll-drawn SVG journey line, three $10 design listings, and six illustrative UI concepts. Cards stack as the visitor scrolls. The Real Magic Ticker has a standalone GSAP ScrollTrigger motion preview at `/previews/real-magic.html`.
 
-The first design's full prompt is saved privately outside this public repository. The public site includes only a visual preview. Purchase and prompt copying require a payment provider, a server-side verified purchase record, and private prompt delivery; none are active yet. The checkout button explains this status instead of claiming a sale. Public visuals can still be captured by visitors, so the site does not claim that previews are copy-proof.
+The three design prompts are saved privately outside this public repository. The public site includes visual previews and a motion demo. Purchase and prompt copying require a payment provider, a server-side verified purchase record, and private prompt delivery; none are active yet. The checkout button explains this status instead of claiming a sale. Public visuals and client-side animation code can still be captured by visitors, so the site does not claim that previews are copy-proof.
 
 ## Build
 
