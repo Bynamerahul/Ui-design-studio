@@ -7,6 +7,6 @@ createServer(async(req,res)=>{
   const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
   const file=resolve(root,'.'+pathname);
   if(file!==root&&!file.startsWith(root+sep)){res.writeHead(403).end();return;}
-  try{const body=await readFile(file===root?join(root,'index.html'):file);res.writeHead(200,{'content-type':types[extname(file)]??'application/octet-stream'}).end(body)}
+  try{const target=file===root?join(root,'index.html'):file;const body=await readFile(target);res.writeHead(200,{'content-type':types[extname(target)]??'application/octet-stream'}).end(body)}
   catch{res.writeHead(404).end('Not found')}
 }).listen(8765,'127.0.0.1',()=>console.log('http://127.0.0.1:8765/'));
