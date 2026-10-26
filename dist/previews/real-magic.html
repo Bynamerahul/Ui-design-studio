@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#a32232">
+  <title>Real Magic Ticker · UI Design Studio Preview</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=Manrope:wght@500;600;700&display=swap');
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:#a32232;color:#fff9ed;font-family:Manrope,Arial,sans-serif;overflow-x:hidden}
+    a{color:inherit}
+    .demo-top{position:fixed;z-index:20;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;padding:22px clamp(20px,4vw,65px);font:600 11px 'DM Sans',sans-serif;letter-spacing:.15em}
+    .demo-top a{text-decoration:none;border:1px solid #ffffff80;border-radius:100px;padding:10px 15px;background:#61101bc2}
+    .intro,.outro{min-height:100svh;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:12vh 8vw;background:radial-gradient(circle at 70% 40%,#cc5b5b,#a32232 55%,#681724)}
+    .intro .eyebrow,.outro .eyebrow{font:600 11px 'DM Sans',sans-serif;letter-spacing:.22em;color:#ffd99e}
+    .intro h1,.outro h2{max-width:950px;font-size:clamp(55px,9vw,140px);line-height:.96;letter-spacing:-.09em;margin:24px 0}
+    .intro p,.outro p{font:400 clamp(15px,1.5vw,20px)/1.6 'DM Sans',sans-serif;max-width:460px;color:#ffe4d5}
+    .scroll-cue{display:inline-flex;align-items:center;gap:13px;margin-top:35px;font-size:12px;letter-spacing:.16em;color:#fff2df}
+    .scroll-cue:before{content:'';width:38px;height:1px;background:currentColor}
+    .story{height:100svh;position:relative;display:flex;align-items:center;background:#f5e9da;color:#ad2533;overflow:hidden}
+    .story:before{content:'THE SENTENCE / 01';position:absolute;top:9vh;left:6vw;font:600 11px 'DM Sans',sans-serif;letter-spacing:.18em;color:#aa6f6b}
+    .story:after{content:'PREVIEW · UI DESIGN STUDIO';position:absolute;bottom:7vh;right:5vw;font:600 10px 'DM Sans',sans-serif;letter-spacing:.14em;color:#aa6f6b}
+    .story-viewport{width:100%;overflow:hidden}
+    .story-line{display:flex;align-items:center;width:max-content;white-space:nowrap;padding:0 12vw 0 8vw;font-size:clamp(76px,10vw,170px);line-height:1.08;letter-spacing:-.08em;font-weight:700;will-change:transform}
+    .story-line .word{flex:none;margin-right:.22em}
+    .story-line .soft{font-weight:500;color:#bb5d58}
+    .story-line .wide{margin-right:.53em}
+    .story-line .gold{color:#bd7d34}
+    .story-line .accent{font-style:italic;color:#8e1727}
+    .inline-mark{flex:none;display:block;width:1.1em;height:.72em;margin:0 .3em .08em .15em}
+    .inline-mark path,.inline-mark circle{fill:none;stroke:#bb7e37;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+    .inline-mark.star{width:.75em;height:.75em}
+    .inline-mark.star path{fill:#d18d4d;stroke:none}
+    .outro{background:radial-gradient(circle at 28% 50%,#cb5848,#851b28 60%,#561421)}
+    .outro h2{max-width:850px}
+    .outro a{display:inline-block;margin-top:25px;padding:15px 22px;text-decoration:none;background:#fff0dc;color:#85202c;font:700 12px 'DM Sans',sans-serif}
+    @media(max-width:640px){.demo-top{padding:15px 18px}.demo-top span{max-width:165px;line-height:1.45}.intro,.outro{padding:16vh 7vw}.story:before{top:12vh}.story:after{bottom:12vh}.story-line{font-size:19vw}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.story{height:auto;min-height:75svh}.story-viewport{overflow-x:auto}.story-line{will-change:auto}}
+    body.no-gsap .story{height:auto;min-height:75svh}
+    body.no-gsap .story-viewport{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="demo-top"><span>UI DESIGN STUDIO / MOTION PREVIEW</span><a href="/#collection">← Back to designs</a></header>
+  <main>
+    <section class="intro"><span class="eyebrow">REAL MAGIC / HORIZONTAL STORY</span><h1>One long thought.<br>One seamless journey.</h1><p>Scroll to read the sentence as a continuous line. Curves and symbols move with the words like punctuation.</p><span class="scroll-cue">SCROLL TO BEGIN</span></section>
+    <section class="story" aria-label="Horizontal scrolling text preview">
+      <div class="story-viewport" tabindex="0">
+        <div class="story-line" aria-label="In every bottle, discover the undeniable Real Magic of sharing pure Refreshment that brings us Together">
+          <span class="word soft" aria-hidden="true">In</span><span class="word" aria-hidden="true">every</span><span class="word wide" aria-hidden="true">bottle,</span>
+          <svg class="inline-mark" viewBox="0 0 110 80" aria-hidden="true"><path d="M5 64C26 8 67 10 104 52"/></svg>
+          <span class="word soft" aria-hidden="true">discover</span><span class="word" aria-hidden="true">the</span><span class="word wide" aria-hidden="true">undeniable</span>
+          <svg class="inline-mark star" viewBox="0 0 80 80" aria-hidden="true"><path d="M40 2l9 29 29 9-29 9-9 29-9-29L2 40l29-9z"/></svg>
+          <span class="word accent" aria-hidden="true">Real</span><span class="word accent wide" aria-hidden="true">Magic</span><span class="word soft" aria-hidden="true">of</span><span class="word" aria-hidden="true">sharing</span><span class="word wide" aria-hidden="true">pure</span>
+          <svg class="inline-mark" viewBox="0 0 110 80" aria-hidden="true"><path d="M4 48c29-37 64-39 101 0M5 70c29-37 64-39 100 0"/></svg>
+          <span class="word gold" aria-hidden="true">Refreshment</span><span class="word soft" aria-hidden="true">that</span><span class="word" aria-hidden="true">brings</span><span class="word" aria-hidden="true">us</span><span class="word accent" aria-hidden="true">Together</span>
+        </div>
+      </div>
+    </section>
+    <section class="outro"><span class="eyebrow">END OF THE SENTENCE</span><h2>Made to keep people reading.</h2><p>A continuous horizontal flow, with no slide breaks.</p><a href="/#collection">Explore the collection ↗</a></section>
+  </main>
+  <script src="/vendor/gsap/gsap.min.js"></script>
+  <script src="/vendor/gsap/ScrollTrigger.min.js"></script>
+  <script>
+    if (window.gsap && window.ScrollTrigger && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.registerPlugin(ScrollTrigger);
+      const section = document.querySelector('.story');
+      const line = document.querySelector('.story-line');
+      const distance = () => Math.max(0, line.scrollWidth - window.innerWidth + window.innerWidth * 0.08);
+      gsap.to(line, {
+        x: () => -distance(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: () => '+=' + Math.max(window.innerWidth, distance()),
+          scrub: 0.65,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true
+        }
+      });
+      window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
+    } else {
+      document.body.classList.add('no-gsap');
+    }
+  </script>
+</body>
+</html>
