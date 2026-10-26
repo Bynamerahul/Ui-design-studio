@@ -8,7 +8,8 @@ const products = [{
   ink: '#edf2ff',
   shape: 'tubes',
   price: 10,
-  status: 'First release'
+  status: 'First release',
+  demo: '/previews/tubes-cursor.html'
 }, {
   name: 'Stacking Cards',
   type: 'Website',
