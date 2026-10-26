@@ -28,6 +28,19 @@ export function adaptSylva(source) {
   replaceOnce('aria-label="Open field note: After the Rain"', 'aria-label="Preview Forma Portfolio"');
   replaceOnce('href="#">Discover<span class="track"></span>', 'href="#">Browse designs<span class="track"></span>');
 
+  // The authored canvas stays mounted through the whole page. The parent
+  // supplies scroll depth while the first-screen controls fade away.
+  replaceOnce('  var nearGroup, farGroup, motes, shadowMesh, glowMesh;', '  var nearGroup, farGroup, journeyNear, journeyFar, motes, shadowMesh, glowMesh;');
+  replaceOnce('    scene.add(farGroup);\n\n    buildAmbient();', '    scene.add(farGroup);\n\n    journeyNear = nearGroup.clone(true);\n    journeyFar = farGroup.clone(true);\n    journeyNear.visible = journeyFar.visible = false;\n    scene.add(journeyNear);\n    scene.add(journeyFar);\n\n    buildAmbient();');
+  replaceOnce(
+    '    place(nearGroup, A, 0.732, 0.06, 0);\n    place(farGroup,  F, 0.410, 0.32, F.z);',
+    '    place(nearGroup, A, 0.732, 0.06, 0);\n    place(farGroup,  F, 0.410, 0.32, F.z);\n    journeyNear.position.copy(nearGroup.position).add(new THREE.Vector3(W * 0.42, H * 0.08, -680));\n    journeyFar.position.copy(farGroup.position).add(new THREE.Vector3(-W * 0.30, H * 0.10, -1200));'
+  );
+  replaceOnce(
+    '    camera.position.x = -smooth.x * 26;\n    camera.position.y =  smooth.y * 16;\n    camera.lookAt(camera.position.x * 0.42, camera.position.y * 0.42, 0);',
+    '    var depth = Math.max(0, Math.min(1, window.__studioDepth || 0));\n    camera.position.z += ((DIST - depth * 650) - camera.position.z) * 0.045;\n    camera.position.x = -smooth.x * 26 + depth * W * 0.065;\n    camera.position.y =  smooth.y * 16 - depth * H * 0.035;\n    camera.lookAt(camera.position.x * 0.42, camera.position.y * 0.42, -depth * 150);\n    journeyNear.visible = depth > 0.02;\n    journeyFar.visible = depth > 0.25;\n    journeyNear.scale.copy(nearGroup.scale).multiplyScalar(0.93 * Math.min(1, Math.max(0, (depth - 0.02) * 4)));\n    journeyFar.scale.copy(farGroup.scale).multiplyScalar(Math.min(1, Math.max(0, (depth - 0.25) * 3)));'
+  );
+
   const storeActions = `<script>
 (function () {
   function send(action, type) {
@@ -45,6 +58,17 @@ export function adaptSylva(source) {
   document.querySelector('.liquid-button--play').addEventListener('click', function () { send('preview'); });
   document.querySelector('.card--stove .knob').addEventListener('click', function () { send('preview'); });
   document.querySelector('.scroll').addEventListener('click', function (event) { event.preventDefault(); send('collection'); });
+  window.addEventListener('message', function (event) {
+    if (event.origin !== window.location.origin || event.data?.source !== 'ui-design-studio-scroll') return;
+    var fade = Math.max(0, Math.min(1, Number(event.data.fade) || 0));
+    window.__studioDepth = Math.max(0, Math.min(1, Number(event.data.depth) || 0));
+    var stage = document.getElementById('stage');
+    var dockWrap = document.querySelector('.dock-wrap');
+    stage.style.opacity = String(1 - fade);
+    dockWrap.style.opacity = String(1 - fade);
+    stage.style.pointerEvents = fade > 0.8 ? 'none' : '';
+    dockWrap.style.pointerEvents = fade > 0.8 ? 'none' : '';
+  });
 })();
 </script>`;
   replaceOnce('</body>', `${storeActions}\n</body>`);
