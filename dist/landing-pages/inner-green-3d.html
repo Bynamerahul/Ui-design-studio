@@ -1799,7 +1799,7 @@ window.__seek   = v => { clock = v; drawn = null; };
   var FAR_N  = { w:  780, left: -110, top: 600, aspect: 1600 /  757, z: -260 };
 
   var renderer, scene, camera;
-  var nearGroup, farGroup, motes, shadowMesh, glowMesh;
+  var nearGroup, farGroup, journeyNear, journeyFar, motes, shadowMesh, glowMesh;
   var W = 1, H = 1, DIST = 1400;
   var poleTex = null;
   var scanning = false, scanT = 0, scanMax = 3000;
@@ -3439,6 +3439,12 @@ window.__seek   = v => { clock = v; drawn = null; };
     });
     scene.add(farGroup);
 
+    journeyNear = nearGroup.clone(true);
+    journeyFar = farGroup.clone(true);
+    journeyNear.visible = journeyFar.visible = false;
+    scene.add(journeyNear);
+    scene.add(journeyFar);
+
     buildAmbient();
     layout();
     window.addEventListener('resize', layout);
@@ -4187,6 +4193,8 @@ window.__seek   = v => { clock = v; drawn = null; };
     /* the near root pins at the arch's apex; the far one at its crest */
     place(nearGroup, A, 0.732, 0.06, 0);
     place(farGroup,  F, 0.410, 0.32, F.z);
+    journeyNear.position.copy(nearGroup.position).add(new THREE.Vector3(W * 0.42, H * 0.08, -680));
+    journeyFar.position.copy(farGroup.position).add(new THREE.Vector3(-W * 0.30, H * 0.10, -1200));
 
     var aw = A.w * u * cover, ah = aw / A.aspect;
     var cx = wx(A.left + 0.5 * A.w), cy = wy(A.top + 0.5 * (A.w / A.aspect));
@@ -4246,9 +4254,15 @@ window.__seek   = v => { clock = v; drawn = null; };
     var dt = Math.min(clock.getDelta(), 0.05);
     if (!REDUCED) uTime.value += dt;
 
-    camera.position.x = -smooth.x * 26;
-    camera.position.y =  smooth.y * 16;
-    camera.lookAt(camera.position.x * 0.42, camera.position.y * 0.42, 0);
+    var depth = Math.max(0, Math.min(1, window.__studioDepth || 0));
+    camera.position.z += ((DIST - depth * 650) - camera.position.z) * 0.045;
+    camera.position.x = -smooth.x * 26 + depth * W * 0.065;
+    camera.position.y =  smooth.y * 16 - depth * H * 0.035;
+    camera.lookAt(camera.position.x * 0.42, camera.position.y * 0.42, -depth * 150);
+    journeyNear.visible = depth > 0.02;
+    journeyFar.visible = depth > 0.25;
+    journeyNear.scale.copy(nearGroup.scale).multiplyScalar(0.93 * Math.min(1, Math.max(0, (depth - 0.02) * 4)));
+    journeyFar.scale.copy(farGroup.scale).multiplyScalar(Math.min(1, Math.max(0, (depth - 0.25) * 3)));
 
     if (!REDUCED) {
       nearGroup.rotation.y = smooth.x * 0.055;
@@ -4317,6 +4331,17 @@ window.__seek   = v => { clock = v; drawn = null; };
   document.querySelector('.liquid-button--play').addEventListener('click', function () { send('preview'); });
   document.querySelector('.card--stove .knob').addEventListener('click', function () { send('preview'); });
   document.querySelector('.scroll').addEventListener('click', function (event) { event.preventDefault(); send('collection'); });
+  window.addEventListener('message', function (event) {
+    if (event.origin !== window.location.origin || event.data?.source !== 'ui-design-studio-scroll') return;
+    var fade = Math.max(0, Math.min(1, Number(event.data.fade) || 0));
+    window.__studioDepth = Math.max(0, Math.min(1, Number(event.data.depth) || 0));
+    var stage = document.getElementById('stage');
+    var dockWrap = document.querySelector('.dock-wrap');
+    stage.style.opacity = String(1 - fade);
+    dockWrap.style.opacity = String(1 - fade);
+    stage.style.pointerEvents = fade > 0.8 ? 'none' : '';
+    dockWrap.style.pointerEvents = fade > 0.8 ? 'none' : '';
+  });
 })();
 </script>
 </body>
