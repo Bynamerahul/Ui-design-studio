@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
 
 const products = [
-  { name: 'Tubes Cursor', type: 'Website', tag: 'Interactive 3D background', color: '#10131c', ink: '#edf2ff', shape: 'tubes', price: 10, status: 'First release' },
+  { name: 'Tubes Cursor', type: 'Website', tag: 'Interactive 3D background', color: '#10131c', ink: '#edf2ff', shape: 'tubes', price: 10, status: 'First release', demo: '/previews/tubes-cursor.html' },
   { name: 'Stacking Cards', type: 'Website', tag: 'Scroll layered portfolio cards', color: '#d7e0d4', ink: '#2a4632', shape: 'stack', price: 10, status: 'New design' },
   { name: 'Real Magic Ticker', type: 'Website', tag: 'Continuous horizontal text story', color: '#9f1c2b', ink: '#fff7eb', shape: 'ticker', price: 10, status: 'New design', demo: '/previews/real-magic.html' },
   { name: 'Forma', type: 'Website', tag: 'Editorial portfolio', color: '#d7d0c3', ink: '#3d4239', shape: 'circle' },
