@@ -36,7 +36,16 @@ mkdirSync(join(dist,'vendor/gsap'),{recursive:true});
 for(const name of ['gsap.min.js','ScrollTrigger.min.js']){
   cpSync(join(root,'node_modules/gsap/dist',name),join(dist,'vendor/gsap',name));
 }
+cpSync(join(root,'node_modules/threejs-components/build/cursors/tubes1.min.js'),join(dist,'vendor/tubes1.min.js'));
 cpSync(join(root,'public/previews'),join(dist,'previews'),{recursive:true});
+for (const [from, to] of [
+  ['src/components/ui/tubes-curor.jsx','components/ui/tubes-curor.js'],
+  ['src/previews/tubes-cursor.jsx','previews/tubes-cursor.js'],
+]) {
+  const transformedPreview=transformSync(readFileSync(join(root,from),'utf8'),{filename:from,configFile:false,babelrc:false,presets:[['@babel/preset-react',{runtime:'classic'}]]});
+  mkdirSync(dirname(join(dist,to)),{recursive:true});
+  writeFileSync(join(dist,to),transformedPreview.code);
+}
 const transformed=transformSync(readFileSync(join(root,'src/App.jsx'),'utf8'),{filename:'App.jsx',configFile:false,babelrc:false,presets:[['@babel/preset-react',{runtime:'classic'}]]});
 writeFileSync(join(dist,'App.js'),transformed.code);
 writeFileSync(join(dist,'main.js'),`import React from 'react';\nimport { createRoot } from 'react-dom/client';\nimport App from './App.js';\ncreateRoot(document.getElementById('root')).render(React.createElement(App));\n`);
