@@ -32,6 +32,11 @@ for(const name of ['LandingPages.js','pageTypography.js','pageRecipes.js']){
 }
 cpSync(join(pkg,'style.css'),join(dist,'threeui.css'));
 cpSync(join(root,'src/style.css'),join(dist,'styles.css'));
+mkdirSync(join(dist,'vendor/gsap'),{recursive:true});
+for(const name of ['gsap.min.js','ScrollTrigger.min.js']){
+  cpSync(join(root,'node_modules/gsap/dist',name),join(dist,'vendor/gsap',name));
+}
+cpSync(join(root,'public/previews'),join(dist,'previews'),{recursive:true});
 const transformed=transformSync(readFileSync(join(root,'src/App.jsx'),'utf8'),{filename:'App.jsx',configFile:false,babelrc:false,presets:[['@babel/preset-react',{runtime:'classic'}]]});
 writeFileSync(join(dist,'App.js'),transformed.code);
 writeFileSync(join(dist,'main.js'),`import React from 'react';\nimport { createRoot } from 'react-dom/client';\nimport App from './App.js';\ncreateRoot(document.getElementById('root')).render(React.createElement(App));\n`);
