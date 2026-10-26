@@ -37,8 +37,10 @@ for(const name of ['gsap.min.js','ScrollTrigger.min.js']){
   cpSync(join(root,'node_modules/gsap/dist',name),join(dist,'vendor/gsap',name));
 }
 cpSync(join(root,'node_modules/threejs-components/build/cursors/tubes1.min.js'),join(dist,'vendor/tubes1.min.js'));
+cpSync(join(root,'node_modules/three/build/three.module.js'),join(dist,'vendor/three.module.js'));
 cpSync(join(root,'public/previews'),join(dist,'previews'),{recursive:true});
 for (const [from, to] of [
+  ['src/ForestJourney.jsx','ForestJourney.js'],
   ['src/components/ui/tubes-curor.jsx','components/ui/tubes-curor.js'],
   ['src/previews/tubes-cursor.jsx','previews/tubes-cursor.js'],
 ]) {
@@ -49,5 +51,5 @@ for (const [from, to] of [
 const transformed=transformSync(readFileSync(join(root,'src/App.jsx'),'utf8'),{filename:'App.jsx',configFile:false,babelrc:false,presets:[['@babel/preset-react',{runtime:'classic'}]]});
 writeFileSync(join(dist,'App.js'),transformed.code);
 writeFileSync(join(dist,'main.js'),`import React from 'react';\nimport { createRoot } from 'react-dom/client';\nimport App from './App.js';\ncreateRoot(document.getElementById('root')).render(React.createElement(App));\n`);
-writeFileSync(join(dist,'index.html'),`<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#383b34"><meta name="description" content="UI Design Studio — explore distinctive UI concepts."><title>UI Design Studio — Explore the collection</title><link rel="stylesheet" href="/threeui.css"><link rel="stylesheet" href="/styles.css"><script type="importmap">{"imports":{"react":"https://esm.sh/react@19.2.0","react/jsx-runtime":"https://esm.sh/react@19.2.0/jsx-runtime","react-dom/client":"https://esm.sh/react-dom@19.2.0/client?external=react","@designcodeio/threeui":"/vendor/LandingPages.js"}}</script></head><body><div id="root"></div><script type="module" src="/main.js"></script></body></html>`);
+writeFileSync(join(dist,'index.html'),`<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#303a2f"><meta name="description" content="UI Design Studio — explore distinctive UI concepts inside a living 3D world."><title>UI Design Studio — Enter the design grove</title><link rel="stylesheet" href="/threeui.css"><link rel="stylesheet" href="/styles.css"><script type="importmap">{"imports":{"react":"https://esm.sh/react@19.2.0","react/jsx-runtime":"https://esm.sh/react@19.2.0/jsx-runtime","react-dom/client":"https://esm.sh/react-dom@19.2.0/client?external=react","@designcodeio/threeui":"/vendor/LandingPages.js","three":"/vendor/three.module.js"}}</script></head><body><div id="root"></div><script type="module" src="/main.js"></script></body></html>`);
 console.log('Built dist with verified Sylva assets');
