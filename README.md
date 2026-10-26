@@ -1,6 +1,6 @@
 # UI Design Studio
 
-Storefront preview with the exact ThreeUI Sylva Living Green hero, followed by a scroll-driven 3D forest journey. A local Three.js scene grows repeated mossy branches and moves the camera forward through them as visitors scroll. The collection continues in the same green world with a scroll-drawn SVG line, three $10 design listings, and six illustrative UI concepts. Cards stack as the visitor scrolls. The Real Magic Ticker has a standalone GSAP ScrollTrigger motion preview at `/previews/real-magic.html`.
+Storefront preview with one continuous ThreeUI Sylva Living Green scene behind the hero and every homepage section. The hero's UI fades on scroll while its authored moss geometry stays visible; additional instances of those same branches and a gentle camera move carry the scene through the collection. The collection includes a scroll-drawn SVG line, three $10 design listings, and six illustrative UI concepts. Cards stack as the visitor scrolls. The Real Magic Ticker has a standalone GSAP ScrollTrigger motion preview at `/previews/real-magic.html`.
 
 The three design prompts are saved privately outside this public repository. The public site includes visual previews and a motion demo. Purchase and prompt copying require a payment provider, a server-side verified purchase record, and private prompt delivery; none are active yet. The checkout button explains this status instead of claiming a sale. Public visuals and client-side animation code can still be captured by visitors, so the site does not claim that previews are copy-proof.
 
