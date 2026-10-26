@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
+import ForestJourney from './ForestJourney.js';
 const products = [{
   name: 'Tubes Cursor',
   type: 'Website',
@@ -232,7 +233,18 @@ export default function App() {
   }, [selected]);
   return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Scene, null), /*#__PURE__*/React.createElement("main", {
     id: "collection"
-  }, /*#__PURE__*/React.createElement("section", {
+  }, /*#__PURE__*/React.createElement(ForestJourney, null), /*#__PURE__*/React.createElement("section", {
+    className: "world-intro",
+    "aria-label": "Enter the design grove"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "world-intro__top"
+  }, /*#__PURE__*/React.createElement("span", null, "UI DESIGN STUDIO / THE WORLD"), /*#__PURE__*/React.createElement("span", null, "01 — 09")), /*#__PURE__*/React.createElement("div", {
+    className: "world-intro__copy"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "eyebrow"
+  }, "STEP BEYOND THE HERO"), /*#__PURE__*/React.createElement("h2", null, "Follow the ideas", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("em", null, "deeper.")), /*#__PURE__*/React.createElement("p", null, "A growing world of interfaces. Keep scrolling as the branches make way for each design.")), /*#__PURE__*/React.createElement("span", {
+    className: "world-intro__cue"
+  }, "SCROLL TO WANDER ", /*#__PURE__*/React.createElement("span", null, "↓"))), /*#__PURE__*/React.createElement("section", {
     className: "collection-wrap",
     "aria-labelledby": "collection-title"
   }, /*#__PURE__*/React.createElement("div", {

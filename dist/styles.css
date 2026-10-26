@@ -70,3 +70,47 @@
 .copy-locked{margin-top:13px;border:1px solid #aebcae;background:transparent;color:#3f5941;padding:10px 14px;font-size:12px;font-weight:700}
 @media(max-width:900px){.product{top:var(--stack-top)}.stack-sheet{width:62%}}
 @media(max-width:640px){.product{top:var(--stack-top)}.stack-sheet{width:61%;height:70%;padding:12px}.stack-sheet-front strong{font-size:34px}.stack-sheet-front small,.stack-sheet-front em{font-size:7px}.ticker-preview-ribbon{font-size:38px}}
+
+/* The catalog continues the Sylva hero as a scrollable forest world. */
+@font-face{font-family:StudioLexend;src:url('/landing-pages/inner-green-assets/lexend-latin.woff2') format('woff2');font-display:swap}
+body{background:#29372b;color:#f6f7ed;font-family:StudioLexend,Arial,sans-serif}
+main{position:relative;background:#29372b;isolation:isolate;overflow:clip}
+.world-stage{position:sticky;top:0;z-index:0;height:100svh;margin-bottom:-100svh;pointer-events:none;overflow:hidden;background:radial-gradient(circle at 50% 42%,#64765c,#2d3a2e 60%,#202b23)}
+.world-stage canvas{display:block;width:100%;height:100%}
+.world-stage:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#19291e88,transparent 25%,transparent 75%,#19291e88),linear-gradient(180deg,#1d2c2188,transparent 24%,transparent 72%,#1d2c2188);pointer-events:none}
+main>section{position:relative;z-index:1}
+.world-intro{min-height:110svh;padding:42px 5vw 80px;display:flex;flex-direction:column;justify-content:space-between;text-shadow:0 3px 25px #0c1a11a8}
+.world-intro__top{display:flex;justify-content:space-between;gap:20px;font-size:11px;letter-spacing:.2em;color:#e2ead8}
+.world-intro__copy{max-width:920px;padding:12vh 0 12vh}
+.world-intro .eyebrow{color:#d4e1ca;letter-spacing:.25em}
+.world-intro h2{font-size:clamp(65px,10vw,165px);font-weight:300;line-height:.98;letter-spacing:-.075em;margin:25px 0}
+.world-intro h2 em{font-style:normal;color:#d7e8cd}
+.world-intro__copy>p:last-child{max-width:425px;color:#edf2e8;font-size:clamp(15px,1.6vw,20px);line-height:1.6}
+.world-intro__cue{align-self:flex-end;font-size:11px;letter-spacing:.2em;display:flex;align-items:center;gap:25px}
+.world-intro__cue span{font-size:34px;font-weight:200}
+.collection-wrap{padding-bottom:85px}
+.section-rule{border-color:#ffffff50;color:#ecf1e8;margin-top:0}
+.collection-heading h1{font-family:StudioLexend,Arial,sans-serif;font-weight:300;color:#fff}
+.collection-heading h1{text-shadow:0 3px 20px #101e12c7}
+.collection-heading h1 em{color:#c1d9bd}
+.collection-heading>p{color:#ebf0e6;background:#182a1d9c;padding:16px 18px;border-radius:18px;backdrop-filter:blur(8px)}
+.collection-heading .eyebrow,.closing .eyebrow{color:#c9ddc2}
+.filters{border-color:#ffffff5c}
+.filters button{border-color:#f6fff270;color:#f5f9f1;background:#14271966;backdrop-filter:blur(8px)}
+.filters button.active,.filters button:hover{background:#eef5e9;color:#2d3e30;border-color:#eef5e9}
+.journey-track{stroke:#e4f0de60}.journey-progress{stroke:#e5f1d7}
+.product{border:1px solid #edf5e6b8;background:#f6f8f0f2;border-radius:34px;overflow:hidden;box-shadow:0 18px 60px #09170b77;backdrop-filter:blur(16px)}
+.product-preview{border-radius:33px 0 0 33px}
+.product-label{color:#26392b}
+.product-label span:not(.arrow){color:#5e7260}
+.product-label p{color:#657866}
+.product-price{background:#e2eddd}
+.catalog-note{color:#edf4e8;text-shadow:0 2px 12px #111b13}
+.closing{background:transparent;min-height:95svh;display:flex;align-items:center;padding:100px 5vw}
+.closing-inner{width:min(1050px,100%);padding:clamp(35px,5vw,72px);border:1px solid #edf5e681;border-radius:42px;background:#1e3025bd;backdrop-filter:blur(22px);box-shadow:0 30px 80px #10201466}
+.closing h2{font-family:StudioLexend,Arial,sans-serif;font-weight:300}
+.closing p{color:#e0e9dc}
+.closing a{border-radius:40px}
+footer{position:relative;z-index:2;background:#1a271e}
+@media(max-width:900px){.product-preview{border-radius:33px 33px 0 0}.product{grid-template-columns:1fr}.product-label{background:#f6f8f0}}
+@media(max-width:640px){.world-intro{min-height:95svh;padding:26px 7vw 55px}.world-intro__top{font-size:9px}.world-intro h2{font-size:clamp(58px,15vw,90px)}.world-intro__copy{padding:8vh 0}.journey{padding-left:25px}.journey-line{opacity:.5}.product{border-radius:25px}.product-preview{border-radius:24px 24px 0 0}.collection-heading{margin-top:55px}.closing{padding:75px 5vw}.closing-inner{border-radius:25px;padding:35px 27px}}
