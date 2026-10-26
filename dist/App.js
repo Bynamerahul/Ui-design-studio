@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
-import ForestJourney from './ForestJourney.js';
 const products = [{
   name: 'Tubes Cursor',
   type: 'Website',
@@ -163,6 +162,39 @@ export default function App() {
   const journeyPathRef = useRef(null);
   const shown = filter === 'All' ? products : products.filter(p => p.type === filter);
   useEffect(() => {
+    const iframe = document.querySelector('.shader-frame iframe');
+    const main = document.getElementById('collection');
+    if (!iframe || !main) return;
+    let scheduled = false;
+    function publishScroll() {
+      scheduled = false;
+      const fade = Math.max(0, Math.min(1, window.scrollY / Math.max(1, window.innerHeight)));
+      const rect = main.getBoundingClientRect();
+      const depth = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height - window.innerHeight)));
+      iframe.contentWindow?.postMessage({
+        source: 'ui-design-studio-scroll',
+        fade,
+        depth
+      }, window.location.origin);
+    }
+    function scheduleScroll() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(publishScroll);
+    }
+    iframe.addEventListener('load', publishScroll);
+    window.addEventListener('scroll', scheduleScroll, {
+      passive: true
+    });
+    window.addEventListener('resize', scheduleScroll);
+    publishScroll();
+    return () => {
+      iframe.removeEventListener('load', publishScroll);
+      window.removeEventListener('scroll', scheduleScroll);
+      window.removeEventListener('resize', scheduleScroll);
+    };
+  }, []);
+  useEffect(() => {
     const path = journeyPathRef.current;
     const section = journeyRef.current;
     if (!path || !section) return;
@@ -231,9 +263,12 @@ export default function App() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [selected]);
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Scene, null), /*#__PURE__*/React.createElement("main", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Scene, null), /*#__PURE__*/React.createElement("div", {
+    className: "hero-spacer",
+    "aria-hidden": "true"
+  }), /*#__PURE__*/React.createElement("main", {
     id: "collection"
-  }, /*#__PURE__*/React.createElement(ForestJourney, null), /*#__PURE__*/React.createElement("section", {
+  }, /*#__PURE__*/React.createElement("section", {
     className: "world-intro",
     "aria-label": "Enter the design grove"
   }, /*#__PURE__*/React.createElement("div", {
