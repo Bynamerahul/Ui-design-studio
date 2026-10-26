@@ -10,6 +10,25 @@ const products = [{
   price: 10,
   status: 'First release'
 }, {
+  name: 'Stacking Cards',
+  type: 'Website',
+  tag: 'Scroll layered portfolio cards',
+  color: '#d7e0d4',
+  ink: '#2a4632',
+  shape: 'stack',
+  price: 10,
+  status: 'New design'
+}, {
+  name: 'Real Magic Ticker',
+  type: 'Website',
+  tag: 'Continuous horizontal text story',
+  color: '#9f1c2b',
+  ink: '#fff7eb',
+  shape: 'ticker',
+  price: 10,
+  status: 'New design',
+  demo: '/previews/real-magic.html'
+}, {
   name: 'Forma',
   type: 'Website',
   tag: 'Editorial portfolio',
@@ -55,6 +74,33 @@ const products = [{
 function ProductArtwork({
   product
 }) {
+  if (product.shape === 'stack') return /*#__PURE__*/React.createElement("div", {
+    className: "product-preview stack-preview",
+    role: "img",
+    "aria-label": "Preview illustration of layered portfolio cards"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "stack-sheet stack-sheet-back"
+  }, "03 ", /*#__PURE__*/React.createElement("span", null, "THE NEXT IDEA")), /*#__PURE__*/React.createElement("div", {
+    className: "stack-sheet stack-sheet-middle"
+  }, "02 ", /*#__PURE__*/React.createElement("span", null, "THE PROCESS")), /*#__PURE__*/React.createElement("div", {
+    className: "stack-sheet stack-sheet-front"
+  }, /*#__PURE__*/React.createElement("small", null, "PORTFOLIO / INTERACTION"), /*#__PURE__*/React.createElement("strong", null, "Stacking", /*#__PURE__*/React.createElement("br", null), "Cards", /*#__PURE__*/React.createElement("span", null, ".")), /*#__PURE__*/React.createElement("em", null, "SCROLL TO REVEAL ↗")), /*#__PURE__*/React.createElement("span", {
+    className: "preview-watermark"
+  }, "PREVIEW · UI DESIGN STUDIO"));
+  if (product.shape === 'ticker') return /*#__PURE__*/React.createElement("div", {
+    className: "product-preview ticker-preview",
+    role: "img",
+    "aria-label": "Preview illustration of a continuous horizontal typography animation"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ticker-preview-ribbon"
+  }, /*#__PURE__*/React.createElement("span", null, "In every bottle,"), /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 90 65",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M4 50 Q40 -10 85 32"
+  })), /*#__PURE__*/React.createElement("strong", null, "Real Magic"), /*#__PURE__*/React.createElement("span", null, "brings us Together")), /*#__PURE__*/React.createElement("span", {
+    className: "preview-watermark"
+  }, "PREVIEW · UI DESIGN STUDIO"));
   if (product.shape === 'tubes') return /*#__PURE__*/React.createElement("div", {
     className: "product-preview tubes-preview",
     role: "img",
@@ -196,7 +242,7 @@ export default function App() {
     className: "eyebrow"
   }, "SELECTED INTERFACES"), /*#__PURE__*/React.createElement("h1", {
     id: "collection-title"
-  }, "Designs for", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("em", null, "what comes next."))), /*#__PURE__*/React.createElement("p", null, "Explore UI designs one by one. The first release is a cursor-reactive 3D background, with more website, app, and dashboard concepts on the way.")), /*#__PURE__*/React.createElement("div", {
+  }, "Designs for", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("em", null, "what comes next."))), /*#__PURE__*/React.createElement("p", null, "Explore UI designs one by one. Scroll through layered portfolio cards, preview the motion, and discover the first three $10 concepts.")), /*#__PURE__*/React.createElement("div", {
     className: "filters",
     role: "group",
     "aria-label": "Filter UI designs"
@@ -206,7 +252,7 @@ export default function App() {
     className: filter === type ? 'active' : '',
     "aria-pressed": filter === type,
     onClick: () => setFilter(type)
-  }, type, type === 'All' && /*#__PURE__*/React.createElement("span", null, "07")))), /*#__PURE__*/React.createElement("div", {
+  }, type, type === 'All' && /*#__PURE__*/React.createElement("span", null, "09")))), /*#__PURE__*/React.createElement("div", {
     className: "journey",
     ref: journeyRef
   }, /*#__PURE__*/React.createElement("svg", {
@@ -227,6 +273,10 @@ export default function App() {
     className: "product",
     type: "button",
     key: product.name,
+    style: {
+      '--stack-top': `${20 + index * 9}px`,
+      zIndex: index + 1
+    },
     onClick: () => {
       setCheckoutMessage(false);
       setSelected(product);
@@ -242,7 +292,7 @@ export default function App() {
     className: "arrow"
   }, "↗")))))), /*#__PURE__*/React.createElement("p", {
     className: "catalog-note"
-  }, "The first design is priced at $10. Checkout and private prompt delivery will open after payment setup. Other cards are concept previews.")), /*#__PURE__*/React.createElement("section", {
+  }, "The first three designs are priced at $10 each. Checkout and private prompt delivery will open after payment setup. Other cards are concept previews.")), /*#__PURE__*/React.createElement("section", {
     className: "closing",
     id: "about"
   }, /*#__PURE__*/React.createElement("div", {
@@ -273,16 +323,25 @@ export default function App() {
     product: selected
   }), /*#__PURE__*/React.createElement("p", {
     className: "eyebrow"
-  }, selected.price ? 'FIRST DESIGN / PREVIEW' : 'CONCEPT PREVIEW'), /*#__PURE__*/React.createElement("h2", {
+  }, selected.price ? 'DESIGN PREVIEW' : 'CONCEPT PREVIEW'), /*#__PURE__*/React.createElement("h2", {
     id: "modal-title"
   }, selected.name), /*#__PURE__*/React.createElement("p", null, selected.tag, " · ", selected.type, " UI design."), selected.price ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("p", {
     className: "preview-disclaimer"
-  }, "The visual preview is public. The implementation prompt is kept private until a verified purchase can unlock it."), /*#__PURE__*/React.createElement("div", {
+  }, "The visual preview is public. The implementation prompt stays private until a verified purchase can unlock it."), selected.demo && /*#__PURE__*/React.createElement("a", {
+    className: "live-preview-link",
+    href: selected.demo,
+    target: "_blank",
+    rel: "noopener noreferrer"
+  }, "Open live motion preview ↗"), /*#__PURE__*/React.createElement("div", {
     className: "modal-foot"
   }, /*#__PURE__*/React.createElement("strong", null, "$10"), /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: () => setCheckoutMessage(true)
-  }, "Purchase for $10 ↗")), checkoutMessage && /*#__PURE__*/React.createElement("p", {
+  }, "Purchase for $10 ↗")), /*#__PURE__*/React.createElement("button", {
+    className: "copy-locked",
+    type: "button",
+    onClick: () => setCheckoutMessage(true)
+  }, "🔒 Copy prompt after purchase"), checkoutMessage && /*#__PURE__*/React.createElement("p", {
     className: "checkout-message",
     role: "status"
   }, "Checkout is not active yet. A verified payment service is required before we can safely deliver the private prompt.")) : /*#__PURE__*/React.createElement("div", {
