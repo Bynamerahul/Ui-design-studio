@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
+import ForestJourney from './ForestJourney.js';
 
 const products = [
   { name: 'Tubes Cursor', type: 'Website', tag: 'Interactive 3D background', color: '#10131c', ink: '#edf2ff', shape: 'tubes', price: 10, status: 'First release', demo: '/previews/tubes-cursor.html' },
@@ -117,6 +118,12 @@ export default function App() {
     <>
       <Scene />
       <main id="collection">
+        <ForestJourney />
+        <section className="world-intro" aria-label="Enter the design grove">
+          <div className="world-intro__top"><span>UI DESIGN STUDIO / THE WORLD</span><span>01 — 09</span></div>
+          <div className="world-intro__copy"><p className="eyebrow">STEP BEYOND THE HERO</p><h2>Follow the ideas<br /><em>deeper.</em></h2><p>A growing world of interfaces. Keep scrolling as the branches make way for each design.</p></div>
+          <span className="world-intro__cue">SCROLL TO WANDER <span>↓</span></span>
+        </section>
         <section className="collection-wrap" aria-labelledby="collection-title">
           <div className="section-rule"><span>UI DESIGN STUDIO</span><span>THE COLLECTION / 2026</span></div>
           <div className="collection-heading">
