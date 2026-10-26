@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
-import ForestJourney from './ForestJourney.js';
 
 const products = [
   { name: 'Tubes Cursor', type: 'Website', tag: 'Interactive 3D background', color: '#10131c', ink: '#edf2ff', shape: 'tubes', price: 10, status: 'First release', demo: '/previews/tubes-cursor.html' },
@@ -71,6 +70,34 @@ export default function App() {
   const shown = filter === 'All' ? products : products.filter((p) => p.type === filter);
 
   useEffect(() => {
+    const iframe = document.querySelector('.shader-frame iframe');
+    const main = document.getElementById('collection');
+    if (!iframe || !main) return;
+    let scheduled = false;
+    function publishScroll() {
+      scheduled = false;
+      const fade = Math.max(0, Math.min(1, window.scrollY / Math.max(1, window.innerHeight)));
+      const rect = main.getBoundingClientRect();
+      const depth = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height - window.innerHeight)));
+      iframe.contentWindow?.postMessage({ source: 'ui-design-studio-scroll', fade, depth }, window.location.origin);
+    }
+    function scheduleScroll() {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(publishScroll);
+    }
+    iframe.addEventListener('load', publishScroll);
+    window.addEventListener('scroll', scheduleScroll, { passive: true });
+    window.addEventListener('resize', scheduleScroll);
+    publishScroll();
+    return () => {
+      iframe.removeEventListener('load', publishScroll);
+      window.removeEventListener('scroll', scheduleScroll);
+      window.removeEventListener('resize', scheduleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
     const path = journeyPathRef.current;
     const section = journeyRef.current;
     if (!path || !section) return;
@@ -117,8 +144,8 @@ export default function App() {
   return (
     <>
       <Scene />
+      <div className="hero-spacer" aria-hidden="true" />
       <main id="collection">
-        <ForestJourney />
         <section className="world-intro" aria-label="Enter the design grove">
           <div className="world-intro__top"><span>UI DESIGN STUDIO / THE WORLD</span><span>01 — 09</span></div>
           <div className="world-intro__copy"><p className="eyebrow">STEP BEYOND THE HERO</p><h2>Follow the ideas<br /><em>deeper.</em></h2><p>A growing world of interfaces. Keep scrolling as the branches make way for each design.</p></div>

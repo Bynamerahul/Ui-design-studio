@@ -75,9 +75,6 @@
 @font-face{font-family:StudioLexend;src:url('/landing-pages/inner-green-assets/lexend-latin.woff2') format('woff2');font-display:swap}
 body{background:#29372b;color:#f6f7ed;font-family:StudioLexend,Arial,sans-serif}
 main{position:relative;background:#29372b;isolation:isolate;overflow:clip}
-.world-stage{position:sticky;top:0;z-index:0;height:100svh;margin-bottom:-100svh;pointer-events:none;overflow:hidden;background:radial-gradient(circle at 50% 42%,#64765c,#2d3a2e 60%,#202b23)}
-.world-stage canvas{display:block;width:100%;height:100%}
-.world-stage:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#19291e88,transparent 25%,transparent 75%,#19291e88),linear-gradient(180deg,#1d2c2188,transparent 24%,transparent 72%,#1d2c2188);pointer-events:none}
 main>section{position:relative;z-index:1}
 .world-intro{min-height:110svh;padding:42px 5vw 80px;display:flex;flex-direction:column;justify-content:space-between;text-shadow:0 3px 25px #0c1a11a8}
 .world-intro__top{display:flex;justify-content:space-between;gap:20px;font-size:11px;letter-spacing:.2em;color:#e2ead8}
@@ -114,3 +111,10 @@ main>section{position:relative;z-index:1}
 footer{position:relative;z-index:2;background:#1a271e}
 @media(max-width:900px){.product-preview{border-radius:33px 33px 0 0}.product{grid-template-columns:1fr}.product-label{background:#f6f8f0}}
 @media(max-width:640px){.world-intro{min-height:95svh;padding:26px 7vw 55px}.world-intro__top{font-size:9px}.world-intro h2{font-size:clamp(58px,15vw,90px)}.world-intro__copy{padding:8vh 0}.journey{padding-left:25px}.journey-line{opacity:.5}.product{border-radius:25px}.product-preview{border-radius:24px 24px 0 0}.collection-heading{margin-top:55px}.closing{padding:75px 5vw}.closing-inner{border-radius:25px;padding:35px 27px}}
+
+/* Keep one authored Sylva scene behind the hero and every scroll section. */
+body{background:#383b34}
+.shader-frame{position:sticky;top:0;z-index:0;height:100svh;min-height:0;margin-bottom:-100svh}
+.hero-spacer{height:100svh;pointer-events:none}
+main{background:transparent;overflow:visible;z-index:1}
+.world-intro{background:linear-gradient(180deg,transparent 0%,#26322824 100%)}
