@@ -1,5 +1,6 @@
 // Retone only the page copy and attach store navigation to the verified authored document.
 // The scene renderer, shaders, styles, controls, and asset paths remain from ThreeUI.
+import { extendUnderwater } from './underwater-extension.mjs';
 export function adaptSylva(source) {
   let html = source;
   function replaceOnce(before, after) {
@@ -14,19 +15,24 @@ export function adaptSylva(source) {
   replaceOnce('<span>Journal</span>', '<span>Apps</span>');
   replaceOnce('<span>Enter</span>', '<span>Explore</span>');
   replaceOnce('aria-hidden="true">SYLVA</div>', 'aria-hidden="true">STUDIO</div>');
-  replaceOnce('<p class="label">Our Ethos</p>', '<p class="label">Our Approach</p>');
-  replaceOnce('<h2>Let the wild lead.</h2>', '<h2>Let ideas grow.</h2>');
-  replaceOnce('aria-label="Read about Sylva"', 'aria-label="Read about UI Design Studio"');
+  replaceOnce('<p class="label">Our Ethos</p>', '<p class="label">Premium release · $200</p>');
+  replaceOnce('<h2>Let the wild lead.</h2>', '<h2>Megacity<br>Odyssey</h2>');
+  replaceOnce('aria-label="Read about Sylva"', 'aria-label="Preview Megacity Odyssey — $200"');
+  replaceOnce('src="inner-green-assets/card-ethos.jpg" alt="A cushion of moss grown over lichen-crusted stones"', 'src="/catalog/megacity-odyssey.png" alt="A detailed industrial megacity with elevated bridges at sunset"');
+  replaceOnce('<article class="card card--about mask"', '<article role="button" tabindex="0" aria-label="Preview Megacity Odyssey — $200" class="card card--about mask"');
   replaceOnce('<span><i style="--d:360ms">the living world</i></span>', '<span><i style="--d:360ms">better UI design</i></span>');
   replaceOnce('We restore wild places through patient design, native planting, and a deeper kind of stewardship.', 'Explore crafted UI designs for websites, apps, and dashboards — made to spark your next idea.');
   replaceOnce('<span class="lbl">Explore the work</span>', '<span class="lbl">Browse the designs</span>');
-  replaceOnce('aria-label="Play the film"', 'aria-label="Preview a featured design"');
-  replaceOnce('<dt>Canopy restored</dt><dd>282 ha</dd>', '<dt>UI concepts</dt><dd>09 to explore</dd>');
+  replaceOnce('aria-label="Play the film"', 'aria-label="Preview Megacity Odyssey — $200"');
+  replaceOnce('<dt>Canopy restored</dt><dd>282 ha</dd>', '<dt>UI concepts</dt><dd>12 to explore</dd>');
   replaceOnce('<dt>Native species</dt><dd>43 mapped</dd>', '<dt>Design paths</dt><dd>03 categories</dd>');
-  replaceOnce('<p class="label">Field Note 07</p>', '<p class="label">Featured Concept</p>');
-  replaceOnce('<h2>After the Rain</h2>', '<h2>Forma Portfolio</h2>');
-  replaceOnce('aria-label="Open field note: After the Rain"', 'aria-label="Preview Forma Portfolio"');
+  replaceOnce('<p class="label">Field Note 07</p>', '<p class="label">Latest design · $10</p>');
+  replaceOnce('<h2>After the Rain</h2>', '<h2>Perspective<br>Tunnel Hero</h2>');
+  replaceOnce('aria-label="Open field note: After the Rain"', 'aria-label="Preview Perspective Tunnel Hero — $10" tabindex="-1" aria-hidden="true"');
+  replaceOnce('src="inner-green-assets/card-ecostove.jpg" alt="Moss-covered boulders in a misty grove"', 'src="/catalog/perspective-tunnel-hero-hero.svg" alt="Purple spatial image cards arranged around the Into the Ether headline"');
+  replaceOnce('<article class="card card--stove mask"', '<article role="button" tabindex="0" aria-label="Preview Perspective Tunnel Hero — $10" class="card card--stove mask"');
   replaceOnce('href="#">Discover<span class="track"></span>', 'href="#">Browse designs<span class="track"></span>');
+  replaceOnce('    if (!small) bf = buildButterfly(nearGroup, nearLimbs, nearGroup.userData.uni);', '    // Underwater scene uses fish and jellyfish instead of the landing butterfly.');
 
   // The authored canvas stays mounted through the whole page. The parent
   // supplies scroll depth while the first-screen controls fade away.
@@ -43,6 +49,25 @@ export function adaptSylva(source) {
 
   const storeActions = `<script>
 (function () {
+  window.addEventListener('pointerdown', function() {
+    window.parent.postMessage({source:'ui-design-studio-ambience'},location.origin);
+  });
+  var touchY = null;
+  window.addEventListener('touchstart', function(event) { touchY=event.touches[0]?.clientY; }, {passive:true});
+  window.addEventListener('touchmove', function(event) {
+    if(touchY == null || event.touches.length !== 1) return;
+    var next=event.touches[0].clientY;
+    event.preventDefault();
+    window.parent.postMessage({source:'ui-design-studio-wheel',delta:touchY-next},location.origin);
+    touchY=next;
+  }, {passive:false});
+  window.addEventListener('wheel', function(event) {
+    event.preventDefault();
+    window.parent.postMessage({source:'ui-design-studio-wheel',delta:event.deltaY},location.origin);
+  }, {passive:false});
+  window.addEventListener('pointermove', function(event) {
+    window.__studioPointer = {x:event.clientX / innerWidth * 2 - 1,y:event.clientY / innerHeight * 2 - 1};
+  }, {passive:true});
   function send(action, type) {
     window.parent.postMessage({ source: 'ui-design-studio-hero', action: action, type: type || null }, window.location.origin);
   }
@@ -53,12 +78,23 @@ export function adaptSylva(source) {
   for (var i = 0; i < dock.length; i++) (function (item, instruction) {
     item.addEventListener('click', function () { send(instruction[0], instruction[1]); });
   })(dock[i], actions[i]);
-  document.querySelector('.knob--about').addEventListener('click', function () { send('about'); });
+  function connectProduct(selector, name) {
+    var card=document.querySelector(selector);
+    card.addEventListener('click', function() {send('preview',name);});
+    card.addEventListener('keydown', function(event) {if(event.key==='Enter'||event.key===' '){event.preventDefault();send('preview',name);}});
+  }
+  connectProduct('.card--about','Megacity Odyssey');
+  connectProduct('.card--stove','Perspective Tunnel Hero');
+  document.querySelector('.knob--about').addEventListener('click', function () { send('preview','Megacity Odyssey'); });
+  document.querySelectorAll('.knob svg').forEach(function(svg){svg.innerHTML='<path d="M7 17 17 7M7 7h10v10"/>';});
   document.querySelector('.liquid-button--explore').addEventListener('click', function () { send('collection'); });
-  document.querySelector('.liquid-button--play').addEventListener('click', function () { send('preview'); });
-  document.querySelector('.card--stove .knob').addEventListener('click', function () { send('preview'); });
+  document.querySelector('.liquid-button--play').addEventListener('click', function () { send('preview','Megacity Odyssey'); });
   document.querySelector('.scroll').addEventListener('click', function (event) { event.preventDefault(); send('collection'); });
   window.addEventListener('message', function (event) {
+    if (event.origin === window.location.origin && event.data?.source === 'ui-design-studio-pointer') {
+      window.__studioPointer = event.data;
+      return;
+    }
     if (event.origin !== window.location.origin || event.data?.source !== 'ui-design-studio-scroll') return;
     var fade = Math.max(0, Math.min(1, Number(event.data.fade) || 0));
     window.__studioDepth = Math.max(0, Math.min(1, Number(event.data.depth) || 0));
@@ -72,5 +108,25 @@ export function adaptSylva(source) {
 })();
 </script>`;
   replaceOnce('</body>', `${storeActions}\n</body>`);
-  return html;
+  html=html.replace('</head>',`<style>
+html,body{overflow:hidden!important;height:100%!important;background:#082d38!important}
+.hero{height:100svh!important;min-height:0!important;background:radial-gradient(ellipse at 35% -20%,#16545a 0,#082d38 48%,#05242f 100%)!important}
+.hero::after{display:none!important}
+.card{cursor:pointer}
+.card:focus-visible{outline:2px solid #b9eadb;outline-offset:6px}
+.card--about h2{width:calc(185 * var(--u));font-size:calc(25 * var(--u));line-height:calc(27 * var(--u))}
+.card--stove h2{font-size:calc(25 * var(--u));line-height:calc(27 * var(--u))}
+.card .label{font-size:calc(13 * var(--u));letter-spacing:calc(.3 * var(--u))}
+.card--stove .knob{pointer-events:none}
+.card .portal-media{inset:0}
+.card .portal-media img{transform:none;filter:none}
+.card:hover .portal-media img{transform:scale(1.04);filter:none}
+@media(max-width:900px){.card--about h2{width:calc(400 * var(--u));font-size:calc(32 * var(--u));line-height:calc(35 * var(--u))}.card--stove h2{font-size:calc(32 * var(--u));line-height:calc(35 * var(--u))}}
+.water-light{position:absolute;inset:-15% -25%;z-index:4;pointer-events:none;opacity:.14;mix-blend-mode:screen;background:conic-gradient(from 155deg at 34% -10%,transparent 0deg,#b3f9e9 18deg,transparent 22deg,#a5efe42b 28deg,transparent 31deg,#d5fff22e 36deg,transparent 41deg);filter:blur(14px);transform-origin:34% 0%;animation:water-light-drift 18s ease-in-out infinite alternate}
+.water-vignette{position:absolute;inset:0;z-index:4;pointer-events:none;background:radial-gradient(ellipse at 48% 35%,transparent 32%,#031c2c80 100%);box-shadow:inset 0 0 100px #021b2a44}
+@keyframes water-light-drift{from{transform:rotate(-5deg) scaleX(1)}to{transform:rotate(5deg) scaleX(1.15)}}
+@media(prefers-reduced-motion:reduce){.water-light{animation:none}}
+</style></head>`);
+  html=html.replace('<canvas id="scene"></canvas>','<canvas id="scene"></canvas><div class="water-light" aria-hidden="true"></div><div class="water-vignette" aria-hidden="true"></div>');
+  return extendUnderwater(html);
 }

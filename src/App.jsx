@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SylvaHero } from '@designcodeio/threeui';
 
 const products = [
+  { name: 'Megacity Odyssey', type: 'Website', tag: 'Cinematic 3D city · four chapters of scroll exploration', color: '#292f42', ink: '#ffddc3', shape: 'city', price: 200, status: 'Premium release', demo: '/previews/megacity-odyssey.html', image: '/catalog/megacity-odyssey.png' },
   { name: 'Tubes Cursor', type: 'Website', tag: 'Interactive 3D background', color: '#10131c', ink: '#edf2ff', shape: 'tubes', price: 10, status: 'First release', demo: '/previews/tubes-cursor.html' },
   { name: 'Stacking Cards', type: 'Website', tag: 'Scroll layered portfolio cards', color: '#d7e0d4', ink: '#2a4632', shape: 'stack', price: 10, status: 'New design' },
   { name: 'Real Magic Ticker', type: 'Website', tag: 'Continuous horizontal text story', color: '#9f1c2b', ink: '#fff7eb', shape: 'ticker', price: 10, status: 'New design', demo: '/previews/real-magic.html' },
+  { name: 'Glass Folder Cards', type: 'Website', tag: 'Frosted interactive file folders', color: '#d9d9e2', ink: '#232839', shape: 'glass', price: 10, status: 'New design', demo: '/previews/glass-folder-cards.html' },
+  { name: 'Perspective Tunnel Hero', type: 'Website', tag: 'Scroll through a spatial image corridor', color: '#17132b', ink: '#f2eaff', shape: 'tunnel', price: 10, status: 'New design', demo: '/previews/perspective-tunnel-hero.html' },
   { name: 'Forma', type: 'Website', tag: 'Editorial portfolio', color: '#d7d0c3', ink: '#3d4239', shape: 'circle' },
   { name: 'Pulse', type: 'Mobile', tag: 'Wellness app', color: '#d9b9ad', ink: '#523d3d', shape: 'arch' },
   { name: 'North', type: 'Dashboard', tag: 'Analytics workspace', color: '#b7ccd0', ink: '#28434b', shape: 'bars' },
@@ -13,7 +16,10 @@ const products = [
   { name: 'Axis', type: 'Dashboard', tag: 'Project workspace', color: '#c8c6d7', ink: '#3a3a50', shape: 'bars' },
 ];
 
+function productImage(product) { return product.image || `/catalog/${product.name.toLowerCase().replaceAll(' ','-')}.svg`; }
+
 function ProductArtwork({ product }) {
+  if (['glass','tunnel','city'].includes(product.shape)) return <div className="product-preview poster-preview" role="img" aria-label={`Preview illustration of ${product.name}`}><img src={productImage(product)} alt="" /><span className="preview-watermark">PREVIEW · UI DESIGN STUDIO</span></div>;
   if (product.shape === 'stack') return (
     <div className="product-preview stack-preview" role="img" aria-label="Preview illustration of layered portfolio cards">
       <div className="stack-sheet stack-sheet-back">03 <span>THE NEXT IDEA</span></div>
@@ -65,9 +71,38 @@ export default function App() {
   const [filter, setFilter] = useState('All');
   const [selected, setSelected] = useState(null);
   const [checkoutMessage, setCheckoutMessage] = useState(false);
-  const journeyRef = useRef(null);
-  const journeyPathRef = useRef(null);
   const shown = filter === 'All' ? products : products.filter((p) => p.type === filter);
+
+  useEffect(() => {
+    if (location.hash === '#design-trail') requestAnimationFrame(() => document.getElementById('design-trail')?.scrollIntoView({behavior:'instant'}));
+  }, []);
+
+  useEffect(() => {
+    let context, water;
+    const start = () => {
+      if (!context) {
+        const Audio = window.AudioContext || window.webkitAudioContext;
+        if (!Audio) return;
+        context = new Audio();
+        const buffer = context.createBuffer(1, context.sampleRate * 5, context.sampleRate);
+        const samples = buffer.getChannelData(0);
+        let previous = 0;
+        for (let i = 0; i < samples.length; i++) { previous = (previous + (Math.random() * 2 - 1) * .025) / 1.025; samples[i] = previous * 3; }
+        water = context.createBufferSource(); water.buffer = buffer; water.loop = true;
+        const filter = context.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 340;
+        const gain = context.createGain(); gain.gain.value = .035;
+        water.connect(filter).connect(gain).connect(context.destination); water.start();
+      }
+      if (context.state === 'suspended') context.resume().catch(() => {});
+    };
+    const onMessage = (event) => { if(event.origin === location.origin && event.data?.source === 'ui-design-studio-ambience') start(); };
+    const visibility = () => { if(document.hidden) context?.suspend(); else if(context) context.resume().catch(()=>{}); };
+    window.addEventListener('pointerdown',start);
+    window.addEventListener('keydown',start);
+    window.addEventListener('message',onMessage);
+    document.addEventListener('visibilitychange',visibility);
+    return () => { water?.stop();context?.close();window.removeEventListener('pointerdown',start);window.removeEventListener('keydown',start);window.removeEventListener('message',onMessage);document.removeEventListener('visibilitychange',visibility); };
+  }, []);
 
   useEffect(() => {
     const iframe = document.querySelector('.shader-frame iframe');
@@ -77,8 +112,19 @@ export default function App() {
     function publishScroll() {
       scheduled = false;
       const fade = Math.max(0, Math.min(1, window.scrollY / Math.max(1, window.innerHeight)));
+      const hud = document.querySelector('.forest-hud');
+      if (hud) {
+        const clearingTop = document.getElementById('design-trail')?.getBoundingClientRect().top ?? Infinity;
+        const entrance = Math.max(0, Math.min(1, (fade - .85) / .15));
+        const exit = Math.max(0, Math.min(1, (clearingTop - 90) / 150));
+        hud.style.opacity = String(entrance * exit);
+        hud.inert = entrance * exit < .1;
+      }
       const rect = main.getBoundingClientRect();
-      const depth = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height - window.innerHeight)));
+      // Finish the descent before the collection; then drift gently behind the stack.
+      const diveHeight = document.getElementById('design-trail').getBoundingClientRect().top - rect.top;
+      const passed = Math.max(0, -rect.top);
+      const depth = passed < diveHeight ? passed / Math.max(1, diveHeight) * .72 : .72 + Math.min(.28, (passed - diveHeight) / Math.max(1, rect.height - diveHeight) * .28);
       iframe.contentWindow?.postMessage({ source: 'ui-design-studio-scroll', fade, depth }, window.location.origin);
     }
     function scheduleScroll() {
@@ -98,32 +144,30 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const path = journeyPathRef.current;
-    const section = journeyRef.current;
-    if (!path || !section) return;
-    const length = path.getTotalLength();
-    path.style.strokeDasharray = String(length);
-    function updateJourney() {
-      const rect = section.getBoundingClientRect();
-      const viewport = window.innerHeight;
-      const progress = Math.max(0, Math.min(1, (viewport * 0.58 - rect.top) / Math.max(1, rect.height - viewport * 0.3)));
-      path.style.strokeDashoffset = String(length * (1 - progress));
+    let queued = false, point = {x:0,y:0};
+    function move(event) {
+      point = {x:event.clientX / innerWidth * 2 - 1, y:event.clientY / innerHeight * 2 - 1};
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        document.querySelector('.shader-frame iframe')?.contentWindow?.postMessage({source:'ui-design-studio-pointer', ...point}, location.origin);
+        document.documentElement.style.setProperty('--look-x', `${point.x * 10}px`);
+        document.documentElement.style.setProperty('--look-y', `${point.y * 6}px`);
+      });
     }
-    const observer = new ResizeObserver(updateJourney);
-    observer.observe(section);
-    window.addEventListener('scroll', updateJourney, { passive: true });
-    window.addEventListener('resize', updateJourney);
-    updateJourney();
-    return () => { observer.disconnect(); window.removeEventListener('scroll', updateJourney); window.removeEventListener('resize', updateJourney); };
-  }, [filter]);
+    window.addEventListener('pointermove', move, {passive:true});
+    return () => window.removeEventListener('pointermove', move);
+  }, []);
 
   useEffect(() => {
     function onMessage(event) {
+      if (event.origin === window.location.origin && event.data?.source === 'ui-design-studio-wheel') {window.scrollBy({top:Number(event.data.delta)||0,behavior:'instant'});return;}
       if (event.origin !== window.location.origin || event.data?.source !== 'ui-design-studio-hero') return;
       const { action, type } = event.data;
       if (action === 'home') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
       if (action === 'about') { document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }); return; }
-      if (action === 'preview') { setCheckoutMessage(false); setSelected(products.find((product) => product.name === 'Forma')); return; }
+      if (action === 'preview') { setCheckoutMessage(false); setSelected(products.find((product) => product.name === type) || products.find((product) => product.name === 'Megacity Odyssey')); return; }
       if (action === 'collection') {
         setFilter(type && ['Website', 'Mobile', 'Dashboard'].includes(type) ? type : 'All');
         document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });
@@ -146,32 +190,18 @@ export default function App() {
       <Scene />
       <div className="hero-spacer" aria-hidden="true" />
       <main id="collection">
-        <section className="world-intro" aria-label="Enter the design grove">
-          <div className="world-intro__top"><span>UI DESIGN STUDIO / THE WORLD</span><span>01 — 09</span></div>
-          <div className="world-intro__copy"><p className="eyebrow">STEP BEYOND THE HERO</p><h2>Follow the ideas<br /><em>deeper.</em></h2><p>A growing world of interfaces. Keep scrolling as the branches make way for each design.</p></div>
-          <span className="world-intro__cue">SCROLL TO WANDER <span>↓</span></span>
+        <div className="forest-hud"><span>UI DESIGN STUDIO</span><span>SCROLL TO DIVE · MOVE TO LOOK</span><a href="#design-trail">Discover designs ↗</a></div>
+        <section className="forest-breath" aria-label="Beneath the surface"><p>A little deeper.<br /><em>A different world.</em></p><span>Drift through the moss. Follow the current.</span></section>
+        <section className="forest-walk" aria-label="A journey beneath the surface">
+          <div className="forest-chapter forest-chapter--first"><div className="chapter-copy"><span className="chapter-index">01 / BENEATH THE SURFACE</span><h2>Let the light<br />guide you.</h2><p>Sunlight slips through the water. Move your cursor and look between the moss-covered arches.</p><span className="chapter-cue">SCROLL TO DESCEND ↓</span></div></div>
+          <div className="forest-chapter forest-chapter--second"><div className="chapter-copy"><span className="chapter-index">02 / IN THE CURRENT</span><h2>Everything<br /><em>moves slowly.</em></h2><p>Fronds sway. Fish pass quietly. Brush the moss as the current carries you further.</p><span className="chapter-cue">LOOK AROUND · DRIFT DEEPER ↓</span></div></div>
+          <div className="forest-chapter forest-chapter--third"><div className="chapter-copy"><span className="chapter-index">03 / THE DISCOVERY</span><h2>Ideas, waiting<br />to surface.</h2><p>A collection of interfaces, found along the way. Choose one and make it yours.</p><a href="#design-trail" className="chapter-cue">EXPLORE THE COLLECTION ↗</a></div></div>
         </section>
-        <section className="collection-wrap" aria-labelledby="collection-title">
-          <div className="section-rule"><span>UI DESIGN STUDIO</span><span>THE COLLECTION / 2026</span></div>
-          <div className="collection-heading">
-            <div><p className="eyebrow">SELECTED INTERFACES</p><h1 id="collection-title">Designs for<br /><em>what comes next.</em></h1></div>
-            <p>Explore UI designs one by one. Scroll through layered portfolio cards, preview the motion, and discover the first three $10 concepts.</p>
-          </div>
-          <div className="filters" role="group" aria-label="Filter UI designs">
-            {['All', 'Website', 'Mobile', 'Dashboard'].map((type) => <button key={type} type="button" className={filter === type ? 'active' : ''} aria-pressed={filter === type} onClick={() => setFilter(type)}>{type}{type === 'All' && <span>09</span>}</button>)}
-          </div>
-          <div className="journey" ref={journeyRef}>
-            <svg className="journey-line" viewBox="0 0 120 1000" preserveAspectRatio="none" aria-hidden="true"><path className="journey-track" d="M 55 0 C 105 180 15 310 65 500 S 15 820 70 1000" /><path ref={journeyPathRef} className="journey-progress" d="M 55 0 C 105 180 15 310 65 500 S 15 820 70 1000" /></svg>
-            <div className="products">
-            {shown.map((product, index) => <button className="product" type="button" key={product.name} style={{ '--stack-top': `${20 + index * 9}px`, zIndex: index + 1 }} onClick={() => { setCheckoutMessage(false); setSelected(product); }} aria-label={`Preview ${product.name}`}>
-              <ProductArtwork product={product} />
-              <div className="product-label"><div><span>{String(index + 1).padStart(2, '0')} / {product.type.toUpperCase()} / {product.status || 'CONCEPT PREVIEW'}</span><strong>{product.name}</strong><p>{product.tag}</p><b className="product-price">{product.price ? `$${product.price}` : 'Coming soon'}</b></div><span className="arrow">↗</span></div>
-            </button>)}
-            </div>
-          </div>
-          <p className="catalog-note">The first three designs are priced at $10 each. Checkout and private prompt delivery will open after payment setup. Other cards are concept previews.</p>
+        <section className="clearing-catalog" id="design-trail" aria-label="Design collection">
+          <div className="clearing-heading"><span>THE COLLECTION / {String(shown.length).padStart(2,'0')} DISCOVERIES</span><h2>Bring something<br />to the surface.</h2><p>Scroll through the collection. Select a design for a closer look.</p></div>
+          <div className="design-stack" aria-label="Designs in a scrolling card stack">{shown.map((p,i)=><article className="design-stack__item" key={p.name} style={{'--stack-offset':`${Math.min(i,4)*7}px`,zIndex:i+1}}><button className={`stack-product ${p.shape==='city'?'stack-product--premium':''}`} aria-label={`Preview ${p.name}${p.price?` · $${p.price}`:''}`} onClick={()=>{setCheckoutMessage(false);setSelected(p);}}><span className="stack-product__top"><span>{String(i+1).padStart(2,'0')} / {p.shape==='city'?'PREMIUM EXPERIENCE':p.type.toUpperCase()}</span><span>{p.price?`$${p.price}`:'CONCEPT PREVIEW'} ↗</span></span><img className="stack-product__image" src={productImage(p)} alt={`${p.name} design preview`} loading="lazy" /><span className="stack-product__foot"><span><strong>{p.name}</strong><small>{p.tag}</small></span><span className="stack-product__cta">Explore design ↗</span></span></button></article>)}</div>
         </section>
-        <section className="closing" id="about"><div className="closing-inner"><span className="eyebrow">UI DESIGN STUDIO</span><h2>A better beginning<br />for your next idea.</h2><p>Original UI designs are on their way. Explore the collection now and check back for the first release.</p><a href="#collection">Explore the collection <span>↗</span></a></div></section>
+        <section className="forest-end" id="about"><p>Good ideas have depth.</p><a href="#design-trail">Explore again ↗</a></section>
       </main>
       <footer><span>© UI Design Studio</span><a href="#collection">Back to collection ↑</a></footer>
       {selected && <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelected(null); }}>
@@ -180,7 +210,7 @@ export default function App() {
           <ProductArtwork product={selected} />
           <p className="eyebrow">{selected.price ? 'DESIGN PREVIEW' : 'CONCEPT PREVIEW'}</p><h2 id="modal-title">{selected.name}</h2>
           <p>{selected.tag} · {selected.type} UI design.</p>
-          {selected.price ? <><p className="preview-disclaimer">The visual preview is public. The implementation prompt stays private until a verified purchase can unlock it.</p>{selected.demo && <a className="live-preview-link" href={selected.demo} target="_blank" rel="noopener noreferrer">Open live motion preview ↗</a>}<div className="modal-foot"><strong>$10</strong><button type="button" onClick={() => setCheckoutMessage(true)}>Purchase for $10 ↗</button></div><button className="copy-locked" type="button" onClick={() => setCheckoutMessage(true)}>🔒 Copy prompt after purchase</button>{checkoutMessage && <p className="checkout-message" role="status">Checkout is not active yet. A verified payment service is required before we can safely deliver the private prompt.</p>}</> : <div className="modal-foot"><span>This design is a concept preview.</span><button type="button" onClick={() => { setSelected(null); document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' }); }}>View more designs</button></div>}
+          {selected.price ? <><p className="preview-disclaimer">The visual preview is public. The implementation prompt stays private until a verified purchase can unlock it.</p>{selected.shape==='city'&&<p className="premium-includes">Four scroll chapters · Curved road traffic · Detailed architecture · Drag to look · View world mode</p>}{selected.demo && <a className="live-preview-link" href={selected.demo} target="_blank" rel="noopener noreferrer">Open live motion preview ↗</a>}<div className="modal-foot"><strong>${selected.price}</strong><button type="button" onClick={() => setCheckoutMessage(true)}>Purchase for ${selected.price} ↗</button></div><button className="copy-locked" type="button" onClick={() => setCheckoutMessage(true)}>🔒 Copy prompt after purchase</button>{checkoutMessage && <p className="checkout-message" role="status">Checkout is not active yet. A verified payment service is required before we can safely deliver the private prompt.</p>}</> : <div className="modal-foot"><span>This design is a concept preview.</span><button type="button" onClick={() => { setSelected(null); document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' }); }}>View more designs</button></div>}
         </div>
       </div>}
     </>

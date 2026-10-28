@@ -2,11 +2,14 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { join, resolve, sep, extname } from 'node:path';
 const root=resolve('dist');
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.jpg':'image/jpeg','.woff2':'font/woff2'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.mp3':'audio/mpeg','.jpg':'image/jpeg','.woff2':'font/woff2'};
 createServer(async(req,res)=>{
-  const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
+  let pathname;
+  try { pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname); }
+  catch { res.writeHead(400).end('Bad request');return; }
+  if(pathname.includes('\0')){res.writeHead(400).end('Bad request');return;}
   const file=resolve(root,'.'+pathname);
   if(file!==root&&!file.startsWith(root+sep)){res.writeHead(403).end();return;}
   try{const target=file===root?join(root,'index.html'):file;const body=await readFile(target);res.writeHead(200,{'content-type':types[extname(target)]??'application/octet-stream'}).end(body)}
   catch{res.writeHead(404).end('Not found')}
-}).listen(8765,'127.0.0.1',()=>console.log('http://127.0.0.1:8765/'));
+}).listen(Number(process.env.PORT || 8765),'127.0.0.1',()=>console.log('http://127.0.0.1:'+(process.env.PORT || 8765)+'/'));
